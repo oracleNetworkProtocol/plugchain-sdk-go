@@ -1,0 +1,49 @@
+syntax = "proto3";
+package plugchain.token;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/token";
+option (gogoproto.goproto_getters_all) = false;
+
+// MsgIssueToken defines an SDK message for issuing a new token.
+message MsgIssueToken {
+  string symbol = 1;
+  string name = 2;
+  uint32 scale = 3;
+  string min_unit = 4 [(gogoproto.moretags) = "yaml:\"min_unit\""];
+  uint64 initial_supply = 5 [(gogoproto.moretags) = "yaml:\"initial_supply\""];
+  uint64 max_supply = 6 [(gogoproto.moretags) = "yaml:\"max_supply\""];
+  bool mintable = 7;
+  string owner = 8;
+}
+
+//MsgTransferOwnerToken defines an SDK message for transferring the token owner
+message MsgTransferOwnerToken{
+  string symbol = 1;
+  string owner = 2;
+  string to = 3;
+}
+
+// MsgEditToken defines an SDK message for editing a new token.
+message MsgEditToken {
+  string symbol = 1;
+  string name = 2;
+  uint64 max_supply = 3 [(gogoproto.moretags) = "yaml:\"max_supply\""];
+  string owner = 4;
+}
+
+// MsgMintToken defines an SDK message for minting a new token.
+message MsgMintToken {
+  string symbol = 1;
+  string to = 2;
+  uint64 amount = 3;
+  string owner = 4;
+}
+
+// MsgBurnToken defines an SDK message for burning some tokens
+message MsgBurnToken{
+  string symbol = 1;
+  uint64 amount = 2;
+  string owner = 3;
+}
