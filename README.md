@@ -4,17 +4,17 @@
 
 ![banner](client/images/logo.jpg)
 <div align="center">
-  <a href="https://github.com/oracleNetworkProtocol/plugchain/releases/latest">
-    <img alt="Version" src="https://img.shields.io/github/tag/oracleNetworkProtocol/plugchain.svg" />
+  <a href="https://github.com/oracleNetworkProtocol/plugchain-sdk-go/releases/tag/latest">
+    <img alt="Version" src="https://img.shields.io/github/v/tag/oracleNetworkProtocol/plugchain-sdk-go.svg?sort=semver" />
   </a>
-  <a href="https://github.com/oracleNetworkProtocol/plugchain/blob/master/LICENSE">
-    <img alt="License: Apache-2.0" src="https://img.shields.io/github/license/oracleNetworkProtocol/plugchain.svg" />
+  <a href="https://github.com/oracleNetworkProtocol/plugchain-sdk-go/blob/master/LICENSE">
+    <img alt="License: Apache-2.0" src="https://img.shields.io/github/license/oracleNetworkProtocol/plugchain-sdk-go.svg" />
   </a>
-   <a href="https://github.com/oracleNetworkProtocol/plugchain">
-    <img alt="Lines Of Code" src="https://tokei.rs/b1/github/oracleNetworkProtocol/plugchain" />
+   <a href="https://github.com/oracleNetworkProtocol/plugchain-sdk-go">
+    <img alt="Lines Of Code" src="https://tokei.rs/b1/github/oracleNetworkProtocol/plugchain-sdk-go" />
     </a>
-    <a href="https://github.com/oracleNetworkProtocol/plugchain/issues">
-    <img alt="GitHub issues" src="https://img.shields.io/github/issues/oracleNetworkProtocol/plugchain">
+    <a href="https://github.com/oracleNetworkProtocol/plugchain-sdk-go/issues">
+    <img alt="GitHub issues" src="https://img.shields.io/github/issues/oracleNetworkProtocol/plugchain-sdk-go">
     </a>
 </div>
 
