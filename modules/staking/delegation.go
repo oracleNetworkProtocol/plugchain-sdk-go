@@ -8,8 +8,8 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	"plugchain-sdk-go/codec"
-	sdk "plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 // Implements Delegation interface

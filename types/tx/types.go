@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	codectypes "plugchain-sdk-go/codec/types"
-	sdk "plugchain-sdk-go/types"
+	codectypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 // MaxGasWanted defines the max gas allowed.

@@ -11,8 +11,8 @@ import (
 
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 
-	clienttx "plugchain-sdk-go/client/tx"
-	sdk "plugchain-sdk-go/types"
+	clienttx "github.com/oracleNetworkProtocol/plugchain-sdk-go/client/tx"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 // QueryTx returns the tx info

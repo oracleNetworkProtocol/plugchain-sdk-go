@@ -5,11 +5,11 @@ import (
 	tmed25519 "github.com/tendermint/tendermint/crypto/ed25519"
 	"github.com/tendermint/tendermint/crypto/sr25519"
 
-	"plugchain-sdk-go/codec"
-	"plugchain-sdk-go/crypto/keys/ed25519"
-	kmultisig "plugchain-sdk-go/crypto/keys/multisig"
-	"plugchain-sdk-go/crypto/keys/secp256k1"
-	cryptotypes "plugchain-sdk-go/crypto/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/keys/ed25519"
+	kmultisig "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/keys/multisig"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/keys/secp256k1"
+	cryptotypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/types"
 )
 
 var amino *codec.LegacyAmino

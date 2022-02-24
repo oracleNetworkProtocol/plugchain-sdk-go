@@ -1,6 +1,6 @@
 package types
 
-import signingtypes "plugchain-sdk-go/types/tx/signing"
+import signingtypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx/signing"
 
 type (
 	TxConfig interface {

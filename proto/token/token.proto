@@ -28,5 +28,5 @@ message Params {
   option (gogoproto.goproto_stringer) = false;
   cosmos.base.v1beta1.Coin issue_token_base_fee = 1 [(gogoproto.nullable) = false];
 
-  string operate_token_fee_ratio = 2 [(gogoproto.customtype) = "plugchain-sdk-go/types.Dec", (gogoproto.nullable) = false];
+  string operate_token_fee_ratio = 2 [(gogoproto.customtype) = "github.com/oracleNetworkProtocol/plugchain-sdk-go/types.Dec", (gogoproto.nullable) = false];
 }

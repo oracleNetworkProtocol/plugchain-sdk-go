@@ -16,7 +16,7 @@ import (
 	io "io"
 	math "math"
 	math_bits "math/bits"
-	query "plugchain-sdk-go/types/query"
+	query "github.com/oracleNetworkProtocol/plugchain-sdk-go/types/query"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.

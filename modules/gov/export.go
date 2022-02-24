@@ -3,7 +3,7 @@ package gov
 import (
 	"time"
 
-	sdk "plugchain-sdk-go/types"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 // expose Gov module api for user

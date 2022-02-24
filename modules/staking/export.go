@@ -3,7 +3,7 @@ package staking
 import (
 	"time"
 
-	sdk "plugchain-sdk-go/types"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 // expose Staking module api for user

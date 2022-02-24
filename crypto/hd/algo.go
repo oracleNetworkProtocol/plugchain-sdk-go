@@ -6,7 +6,7 @@ import (
 	bip39 "github.com/cosmos/go-bip39"
 	"github.com/tendermint/tendermint/crypto"
 
-	"plugchain-sdk-go/crypto/keys/secp256k1"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/keys/secp256k1"
 )
 
 type SignatureAlgo interface {

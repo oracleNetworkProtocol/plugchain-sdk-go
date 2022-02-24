@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"plugchain-sdk-go/crypto"
-	sdk "plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 func TestNewMnemonicKeyManager(t *testing.T) {

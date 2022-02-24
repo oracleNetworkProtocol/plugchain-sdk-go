@@ -10,9 +10,9 @@ import (
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
 	_ "github.com/regen-network/cosmos-proto"
-	types "plugchain-sdk-go/codec/types"
-	_ "plugchain-sdk-go/types"
-	query "plugchain-sdk-go/types/query"
+	types "github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
+	_ "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	query "github.com/oracleNetworkProtocol/plugchain-sdk-go/types/query"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -20,7 +20,7 @@ import (
 	io "io"
 	math "math"
 	math_bits "math/bits"
-	plugchain_sdk_go_types "plugchain-sdk-go/types"
+	plugchain_sdk_go_types "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.

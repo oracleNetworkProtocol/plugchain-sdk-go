@@ -2,11 +2,11 @@ package nft
 
 import (
 	"context"
-	"plugchain-sdk-go/codec"
-	"plugchain-sdk-go/codec/types"
-	"plugchain-sdk-go/types/query"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types/query"
 
-	sdk "plugchain-sdk-go/types"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 type nftClient struct {

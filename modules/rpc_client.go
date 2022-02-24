@@ -4,14 +4,14 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/utils/uuid"
 	"github.com/tendermint/tendermint/crypto/tmhash"
 	"github.com/tendermint/tendermint/libs/log"
 	rpc "github.com/tendermint/tendermint/rpc/client"
 	rpchttp "github.com/tendermint/tendermint/rpc/client/http"
 	tmtypes "github.com/tendermint/tendermint/types"
-	"plugchain-sdk-go/codec"
-	sdk "plugchain-sdk-go/types"
-	"plugchain-sdk-go/utils/uuid"
 )
 
 type rpcClient struct {
@@ -192,7 +192,7 @@ func (r rpcClient) parseNewBlockHeader(data sdk.EventData) sdk.EventDataNewBlock
 
 //获取订阅人		Chain
 func getSubscriber() string {
-	subscriber := "plugchain-sdk-go"
+	subscriber := "github.com/oracleNetworkProtocol/plugchain-sdk-go"
 	id, err := uuid.NewV1()
 	if err == nil {
 		subscriber = fmt.Sprintf("%s-%s", subscriber, id.String())

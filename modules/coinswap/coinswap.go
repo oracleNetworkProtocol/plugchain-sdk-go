@@ -3,13 +3,13 @@ package coinswap
 import (
 	"context"
 	"fmt"
-	cdctypes "plugchain-sdk-go/codec/types"
+	cdctypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
 	"strings"
 
-	"plugchain-sdk-go/types/query"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types/query"
 
-	"plugchain-sdk-go/codec"
-	sdk "plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 type coinswapClient struct {

@@ -8,10 +8,10 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/tendermint/tendermint/crypto"
 
-	"plugchain-sdk-go/codec"
-	codectypes "plugchain-sdk-go/codec/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	codectypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
 
-	sdk "plugchain-sdk-go/types"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 // Account is an interface used to store coins at a given address within state.

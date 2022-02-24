@@ -1,11 +1,11 @@
 package bank
 
 import (
-	"plugchain-sdk-go/codec"
-	"plugchain-sdk-go/codec/types"
-	cryptocodec "plugchain-sdk-go/crypto/codec"
-	"plugchain-sdk-go/modules/auth"
-	sdk "plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
+	cryptocodec "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/auth"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 var (

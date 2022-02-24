@@ -6,8 +6,8 @@ import (
 	"github.com/gogo/protobuf/proto"
 	yaml "gopkg.in/yaml.v2"
 
-	"plugchain-sdk-go/codec/types"
-	sdk "plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 const (

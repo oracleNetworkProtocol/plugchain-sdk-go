@@ -6,8 +6,8 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	"plugchain-sdk-go/crypto/types"
-	"plugchain-sdk-go/types/tx/signing"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx/signing"
 )
 
 // AminoMultisignature is used to represent amino multi-signatures for StdTx's.

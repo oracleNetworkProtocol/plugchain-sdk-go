@@ -7,10 +7,10 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	codectypes "plugchain-sdk-go/codec/types"
-	"plugchain-sdk-go/types"
-	sdk "plugchain-sdk-go/types"
-	"plugchain-sdk-go/types/tx/signing"
+	codectypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx/signing"
 )
 
 // wrapper is a wrapper around the tx.Tx proto.Message which retain the raw

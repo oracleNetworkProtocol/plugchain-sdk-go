@@ -8,7 +8,7 @@ import (
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	_ "github.com/regen-network/cosmos-proto"
-	types "plugchain-sdk-go/codec/types"
+	types "github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"

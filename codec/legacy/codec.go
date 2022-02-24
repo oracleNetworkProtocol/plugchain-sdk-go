@@ -1,8 +1,8 @@
 package legacy
 
 import (
-	"plugchain-sdk-go/codec"
-	cryptocodec "plugchain-sdk-go/crypto/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	cryptocodec "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/codec"
 )
 
 // Cdc defines a global generic sealed Amino codec to be used throughout sdk. It

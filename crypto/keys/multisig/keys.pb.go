@@ -7,7 +7,7 @@ import (
 	fmt "fmt"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
-	types "plugchain-sdk-go/codec/types"
+	types "github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"

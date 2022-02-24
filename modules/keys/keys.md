@@ -56,7 +56,7 @@ func getPrivKeyArmor() []byte {
         panic(err)
     }
     path = filepath.Dir(path)
-    path = filepath.Join(path, "plugchain-sdk-go/test/priv.info")
+    path = filepath.Join(path, "github.com/oracleNetworkProtocol/plugchain-sdk-go/test/priv.info")
 	bz, err := ioutil.ReadFile(path)
     if err != nil {
         panic(err)

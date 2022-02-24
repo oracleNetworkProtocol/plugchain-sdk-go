@@ -3,7 +3,7 @@ package types
 import (
 	"fmt"
 
-	"plugchain-sdk-go/types/tx/signing"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx/signing"
 )
 
 // SignModeHandlerMap is SignModeHandler that aggregates multiple SignModeHandler's into

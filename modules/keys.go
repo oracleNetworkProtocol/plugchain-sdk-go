@@ -5,10 +5,10 @@ import (
 
 	tmcrypto "github.com/tendermint/tendermint/crypto"
 
-	"plugchain-sdk-go/crypto"
-	cryptoamino "plugchain-sdk-go/crypto/codec"
-	"plugchain-sdk-go/types"
-	"plugchain-sdk-go/types/store"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto"
+	cryptoamino "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types/store"
 )
 
 type keyManager struct {

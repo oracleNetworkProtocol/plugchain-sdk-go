@@ -11,8 +11,8 @@ import (
 	secp256k1 "github.com/btcsuite/btcd/btcec"
 	"golang.org/x/crypto/ripemd160" // nolint: staticcheck // necessary for Bitcoin address format
 
-	"plugchain-sdk-go/codec"
-	cryptotypes "plugchain-sdk-go/crypto/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	cryptotypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/types"
 
 	"github.com/tendermint/tendermint/crypto"
 )

@@ -11,8 +11,8 @@ import (
 	"github.com/tendermint/tendermint/crypto/armor"
 	"github.com/tendermint/tendermint/crypto/xsalsa20symmetric"
 
-	"plugchain-sdk-go/codec/legacy"
-	cryptoAmino "plugchain-sdk-go/crypto/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/legacy"
+	cryptoAmino "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/codec"
 )
 
 const (

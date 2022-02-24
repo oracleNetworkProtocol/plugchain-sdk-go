@@ -5,8 +5,8 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"plugchain-sdk-go/codec"
-	sdk "plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 // DefaultTxEncoder returns a default protobuf TxEncoder using the provided Marshaler

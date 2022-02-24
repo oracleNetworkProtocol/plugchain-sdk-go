@@ -1,8 +1,8 @@
 package types
 
 import (
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
 	"github.com/tendermint/tendermint/crypto"
-	"plugchain-sdk-go/codec/types"
 )
 
 type Module interface {

@@ -1,7 +1,7 @@
 package token
 
 import (
-	sdk "plugchain-sdk-go/types"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 type Client interface {

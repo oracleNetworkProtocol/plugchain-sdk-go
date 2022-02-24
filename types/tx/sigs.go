@@ -5,9 +5,9 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	"plugchain-sdk-go/codec"
-	"plugchain-sdk-go/crypto/types"
-	"plugchain-sdk-go/types/tx/signing"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx/signing"
 )
 
 // SignatureDataToModeInfoAndSig converts a SignatureData to a ModeInfo and raw bytes signature

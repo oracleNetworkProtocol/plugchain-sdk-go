@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"plugchain-sdk-go/types/store"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types/store"
 )
 
 const (

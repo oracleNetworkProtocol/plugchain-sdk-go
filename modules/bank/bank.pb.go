@@ -8,12 +8,12 @@ import (
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	_ "github.com/regen-network/cosmos-proto"
-	github_com_oracleNetworkProtocol_plugchain_sdk_go_types "plugchain-sdk-go/types"
-	types "plugchain-sdk-go/types"
+	github_com_oracleNetworkProtocol_plugchain_sdk_go_types "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	types "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"
-	plugchain_sdk_go_types "plugchain-sdk-go/types"
+	plugchain_sdk_go_types "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.

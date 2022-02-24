@@ -1,10 +1,10 @@
 package staking
 
 import (
-	"plugchain-sdk-go/codec"
-	"plugchain-sdk-go/codec/types"
-	cryptocodec "plugchain-sdk-go/crypto/codec"
-	sdk "plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
+	cryptocodec "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/codec"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 var (

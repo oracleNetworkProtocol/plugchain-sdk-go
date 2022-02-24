@@ -3,8 +3,8 @@ package tx
 import (
 	"fmt"
 
-	sdk "plugchain-sdk-go/types"
-	signingtypes "plugchain-sdk-go/types/tx/signing"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	signingtypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx/signing"
 )
 
 // signModeDirectHandler defines the SIGN_MODE_DIRECT SignModeHandler

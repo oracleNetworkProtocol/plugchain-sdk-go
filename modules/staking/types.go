@@ -5,10 +5,10 @@ import (
 
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	"plugchain-sdk-go/codec"
-	codectypes "plugchain-sdk-go/codec/types"
-	crypto "plugchain-sdk-go/crypto/types"
-	sdk "plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	codectypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
+	crypto "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/types"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 const (

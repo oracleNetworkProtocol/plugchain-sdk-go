@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	sdk "plugchain-sdk-go/types"
-	"plugchain-sdk-go/types/tx/signing"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx/signing"
 )
 
 // Factory defines a client transaction factory that facilitates generating and

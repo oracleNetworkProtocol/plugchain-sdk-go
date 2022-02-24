@@ -13,7 +13,7 @@ import (
 	"github.com/gogo/protobuf/protoc-gen-gogo/descriptor"
 	"google.golang.org/protobuf/encoding/protowire"
 
-	"plugchain-sdk-go/codec/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
 )
 
 const bit11NonCritical = 1 << 10

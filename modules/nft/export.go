@@ -1,6 +1,6 @@
 package nft
 
-import sdk "plugchain-sdk-go/types"
+import sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 
 // expose NFT module api for user
 type Client interface {

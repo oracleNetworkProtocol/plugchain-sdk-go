@@ -10,8 +10,8 @@ import (
 	"github.com/tendermint/tendermint/crypto/tmhash"
 	"golang.org/x/crypto/ed25519"
 
-	"plugchain-sdk-go/codec"
-	cryptotypes "plugchain-sdk-go/crypto/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	cryptotypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/types"
 )
 
 //-------------------------------------

@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"strings"
 
-	"plugchain-sdk-go/utils"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/utils"
 
-	"plugchain-sdk-go/codec"
-	"plugchain-sdk-go/codec/types"
-	sdk "plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 type bankClient struct {

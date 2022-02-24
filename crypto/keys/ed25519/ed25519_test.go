@@ -10,9 +10,9 @@ import (
 	tmed25519 "github.com/tendermint/tendermint/crypto/ed25519"
 	"github.com/tendermint/tendermint/crypto/sr25519"
 
-	"plugchain-sdk-go/codec"
-	"plugchain-sdk-go/crypto/keys/ed25519"
-	cryptotypes "plugchain-sdk-go/crypto/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/keys/ed25519"
+	cryptotypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/types"
 )
 
 func TestSignAndValidateEd25519(t *testing.T) {

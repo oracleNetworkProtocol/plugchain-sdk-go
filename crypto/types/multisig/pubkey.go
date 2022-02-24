@@ -3,7 +3,7 @@ package multisig
 import (
 	"github.com/tendermint/tendermint/crypto"
 
-	"plugchain-sdk-go/types/tx/signing"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx/signing"
 )
 
 // PubKey defines a type which supports multi-signature verification via MultiSignatureData

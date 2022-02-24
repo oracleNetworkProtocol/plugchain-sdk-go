@@ -30,7 +30,7 @@ message Input {
 
   string   address                        = 1;
   repeated cosmos.base.v1beta1.Coin coins = 2
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "plugchain-sdk-go/types.Coins"];
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/oracleNetworkProtocol/plugchain-sdk-go/types.Coins"];
 }
 
 // Output models transaction outputs.
@@ -40,7 +40,7 @@ message Output {
 
   string   address                        = 1;
   repeated cosmos.base.v1beta1.Coin coins = 2
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "plugchain-sdk-go/types.Coins"];
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/oracleNetworkProtocol/plugchain-sdk-go/types.Coins"];
 }
 
 // Supply represents a struct that passively keeps track of the total supply

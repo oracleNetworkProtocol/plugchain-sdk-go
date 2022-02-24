@@ -1,7 +1,7 @@
 package bank
 
 import (
-	sdk "plugchain-sdk-go/types"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 // expose bank module api for user

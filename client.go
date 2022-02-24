@@ -2,20 +2,20 @@ package plugchain_sdk
 
 import (
 	"fmt"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	cdctypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
+	cryptocodec "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/bank"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/coinswap"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/gov"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/keys"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/nft"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/staking"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/token"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	txtypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx"
 	"github.com/tendermint/tendermint/libs/log"
-	"plugchain-sdk-go/codec"
-	cdctypes "plugchain-sdk-go/codec/types"
-	cryptocodec "plugchain-sdk-go/crypto/codec"
-	"plugchain-sdk-go/modules"
-	"plugchain-sdk-go/modules/bank"
-	"plugchain-sdk-go/modules/coinswap"
-	"plugchain-sdk-go/modules/gov"
-	"plugchain-sdk-go/modules/keys"
-	"plugchain-sdk-go/modules/nft"
-	"plugchain-sdk-go/modules/staking"
-	"plugchain-sdk-go/modules/token"
-	"plugchain-sdk-go/types"
-	txtypes "plugchain-sdk-go/types/tx"
 )
 
 type PLUGCHAINClient struct {

@@ -7,10 +7,10 @@ import (
 
 	proto "github.com/gogo/protobuf/proto"
 
-	"plugchain-sdk-go/codec/types"
-	crypto "plugchain-sdk-go/crypto/types"
-	multisigtypes "plugchain-sdk-go/crypto/types/multisig"
-	"plugchain-sdk-go/types/tx/signing"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
+	crypto "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/types"
+	multisigtypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/types/multisig"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx/signing"
 )
 
 var _ multisigtypes.PubKey = &LegacyAminoPubKey{}

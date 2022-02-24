@@ -7,11 +7,11 @@ import (
 
 	"github.com/tendermint/tendermint/libs/log"
 
-	"plugchain-sdk-go/codec"
-	"plugchain-sdk-go/modules/auth"
-	"plugchain-sdk-go/modules/bank"
-	sdk "plugchain-sdk-go/types"
-	"plugchain-sdk-go/utils/cache"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/auth"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/bank"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/utils/cache"
 )
 
 // Must be used with locker, otherwise there are thread safety issues

@@ -10,8 +10,8 @@ import (
 
 	"github.com/cosmos/go-bip39"
 
-	cryptoAmino "plugchain-sdk-go/crypto/codec"
-	"plugchain-sdk-go/crypto/hd"
+	cryptoAmino "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/hd"
 )
 
 const (

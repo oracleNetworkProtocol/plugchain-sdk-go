@@ -3,9 +3,9 @@ package tx
 import (
 	"fmt"
 
-	"plugchain-sdk-go/codec"
-	sdk "plugchain-sdk-go/types"
-	signingtypes "plugchain-sdk-go/types/tx/signing"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	signingtypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx/signing"
 )
 
 type config struct {

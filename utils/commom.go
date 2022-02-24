@@ -3,7 +3,7 @@ package utils
 import (
 	"crypto/rand"
 
-	sdk "plugchain-sdk-go/types"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 // GenerateRandomBytes returns securely generated random bytes.

@@ -1,8 +1,8 @@
 package types
 
 import (
-	"plugchain-sdk-go/codec"
-	"plugchain-sdk-go/codec/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
 )
 
 // EncodingConfig specifies the concrete encoding types to use for a given app.

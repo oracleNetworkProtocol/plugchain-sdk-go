@@ -2,7 +2,7 @@ package codec
 
 import (
 	"github.com/gogo/protobuf/proto"
-	"plugchain-sdk-go/codec/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
 )
 
 type (

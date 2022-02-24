@@ -8,7 +8,7 @@ import (
 	"github.com/gogo/protobuf/jsonpb"
 	"github.com/gogo/protobuf/proto"
 
-	"plugchain-sdk-go/codec/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
 )
 
 // ProtoCodec defines a codec that utilizes Protobuf for both binary and JSON

@@ -9,8 +9,8 @@ import (
 	tmclient "github.com/tendermint/tendermint/rpc/client"
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	cryptoAmino "plugchain-sdk-go/crypto/codec"
-	"plugchain-sdk-go/types/kv"
+	cryptoAmino "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types/kv"
 )
 
 type (

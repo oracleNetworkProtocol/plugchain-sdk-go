@@ -1,7 +1,7 @@
 package types
 
 import (
-	"plugchain-sdk-go/types/tx/signing"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx/signing"
 )
 
 //By generating sign bytes SignMode from Tx and  SignerData

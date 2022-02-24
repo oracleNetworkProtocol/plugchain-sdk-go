@@ -11,8 +11,8 @@ import (
 
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 
-	"plugchain-sdk-go/codec"
-	codectypes "plugchain-sdk-go/codec/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	codectypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
 )
 
 var cdc = codec.NewLegacyAmino()

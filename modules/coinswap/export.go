@@ -1,8 +1,8 @@
 package coinswap
 
 import (
-	sdk "plugchain-sdk-go/types"
-	"plugchain-sdk-go/types/query"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types/query"
 )
 
 // expose Record module api for user

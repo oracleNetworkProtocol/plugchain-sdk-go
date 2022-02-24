@@ -7,10 +7,10 @@ import (
 
 	"github.com/tendermint/tendermint/libs/log"
 
-	"plugchain-sdk-go/codec"
-	"plugchain-sdk-go/modules/token"
-	sdk "plugchain-sdk-go/types"
-	"plugchain-sdk-go/utils/cache"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/token"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/utils/cache"
 )
 
 type tokenQuery struct {

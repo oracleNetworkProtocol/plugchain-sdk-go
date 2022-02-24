@@ -3,8 +3,8 @@ package tx
 import (
 	"fmt"
 
-	"plugchain-sdk-go/types"
-	signingtypes "plugchain-sdk-go/types/tx/signing"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	signingtypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx/signing"
 )
 
 // DefaultSignModes are the default sign modes enabled for protobuf transactions.

@@ -15,9 +15,9 @@ import (
 
 	underlyingSecp256k1 "github.com/btcsuite/btcd/btcec"
 
-	"plugchain-sdk-go/codec"
-	"plugchain-sdk-go/crypto/keys/secp256k1"
-	cryptotypes "plugchain-sdk-go/crypto/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/keys/secp256k1"
+	cryptotypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/types"
 )
 
 type keyData struct {

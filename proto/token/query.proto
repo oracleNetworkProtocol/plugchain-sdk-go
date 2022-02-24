@@ -62,12 +62,12 @@ message QueryFeesResponse {
     cosmos.base.v1beta1.Coin issue_fee = 2 [
         (gogoproto.nullable) = false,
         (gogoproto.moretags) = "yaml:\"issue_fee\"",
-        (gogoproto.casttype) = "plugchain-sdk-go/types.Coin"
+        (gogoproto.casttype) = "github.com/oracleNetworkProtocol/plugchain-sdk-go/types.Coin"
     ];
     cosmos.base.v1beta1.Coin mint_fee = 3 [
         (gogoproto.nullable) = false,
         (gogoproto.moretags) = "yaml:\"mint_fee\"",
-        (gogoproto.casttype) = "plugchain-sdk-go/types.Coin"
+        (gogoproto.casttype) = "github.com/oracleNetworkProtocol/plugchain-sdk-go/types.Coin"
     ];
 }
 

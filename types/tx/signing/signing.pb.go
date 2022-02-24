@@ -6,8 +6,8 @@ package signing
 import (
 	fmt "fmt"
 	proto "github.com/gogo/protobuf/proto"
-	types "plugchain-sdk-go/codec/types"
-	types1 "plugchain-sdk-go/crypto/types"
+	types "github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
+	types1 "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"

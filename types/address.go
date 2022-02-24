@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 
-	"plugchain-sdk-go/utils/bech32"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/utils/bech32"
 )
 
 //Bech32 Address

@@ -4,10 +4,10 @@ import (
 	"context"
 	"strconv"
 
-	"plugchain-sdk-go/codec"
-	"plugchain-sdk-go/codec/types"
-	sdk "plugchain-sdk-go/types"
-	"plugchain-sdk-go/types/query"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types/query"
 )
 
 type govClient struct {

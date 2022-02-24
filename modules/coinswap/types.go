@@ -1,7 +1,7 @@
 package coinswap
 
 import (
-	sdk "plugchain-sdk-go/types"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 const (

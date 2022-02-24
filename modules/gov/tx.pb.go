@@ -16,9 +16,9 @@ import (
 	io "io"
 	math "math"
 	math_bits "math/bits"
-	types "plugchain-sdk-go/codec/types"
-	plugchain_sdk_types "plugchain-sdk-go/types"
-	types1 "plugchain-sdk-go/types"
+	types "github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
+	plugchain_sdk_types "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	types1 "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.

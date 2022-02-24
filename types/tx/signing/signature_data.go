@@ -1,6 +1,6 @@
 package signing
 
-import "plugchain-sdk-go/crypto/types"
+import "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/types"
 
 //Signature data set, single signature data, multi signature data
 type SignatureData interface {

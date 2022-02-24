@@ -1,9 +1,9 @@
 package tx
 
 import (
-	"plugchain-sdk-go/codec"
-	"plugchain-sdk-go/codec/unknownproto"
-	sdk "plugchain-sdk-go/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/unknownproto"
+	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
 // DefaultTxDecoder returns a default protobuf TxDecoder using the provided Marshaler.

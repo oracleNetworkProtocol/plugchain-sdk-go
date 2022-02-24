@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"plugchain-sdk-go/codec"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
 )
 
 const (

@@ -1,12 +1,12 @@
 package codec
 
 import (
+	codectypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/keys/ed25519"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/keys/multisig"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/keys/secp256k1"
+	cryptotypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/types"
 	tmcrypto "github.com/tendermint/tendermint/crypto"
-	codectypes "plugchain-sdk-go/codec/types"
-	"plugchain-sdk-go/crypto/keys/ed25519"
-	"plugchain-sdk-go/crypto/keys/multisig"
-	"plugchain-sdk-go/crypto/keys/secp256k1"
-	cryptotypes "plugchain-sdk-go/crypto/types"
 )
 
 // RegisterInterfaces registers the sdk.Tx interface.
