@@ -27,7 +27,7 @@
 > Query current equity pool
 
 ```go
-resp, err := client.Staking.QueryPool()
+resp, err := client.Swap.QueryPool()
 ```
 
 #### QueryAllPools<a name="QueryAllPools"></a><br/>
@@ -35,7 +35,7 @@ resp, err := client.Staking.QueryPool()
 > List all coinswap transaction pairs
 
 ```go
-resp, err := client.Staking.QueryAllPools(types.PageRequest{
+resp, err := client.Swap.QueryAllPools(types.PageRequest{
 Offset:     0,
 Limit:      10,
 CountTotal: false,
@@ -47,7 +47,7 @@ CountTotal: false,
 > Query all completed deposit message of liquidity pool by msg index
 
 ```go
-resp, err := client.Staking.QueryDepositFinish( 1, 0)
+resp, err := client.Swap.QueryDepositFinish( 1, 0)
 ```
 
 #### QueryDepositsFinish<a name="QueryDepositsFinish"></a><br/>
@@ -55,7 +55,7 @@ resp, err := client.Staking.QueryDepositFinish( 1, 0)
 > Query all completed deposit messages of liquidity pool
 
 ```go
-resp, err := client.Staking.QueryDepositsFinish(1)
+resp, err := client.Swap.QueryDepositsFinish(1)
 ```
 
 #### QuerySwapFinish<a name="QuerySwapFinish"></a><br/>
@@ -63,7 +63,7 @@ resp, err := client.Staking.QueryDepositsFinish(1)
 > Query all completed swap message of liquidity pool by msg index
 
 ```go
-resp, err := client.Staking.QuerySwapFinish( 1, 1)
+resp, err := client.Swap.QuerySwapFinish( 1, 1)
 ```
 
 #### QuerySwapsFinish<a name="QuerySwapsFinish"></a><br/>
@@ -71,7 +71,7 @@ resp, err := client.Staking.QuerySwapFinish( 1, 1)
 > Query all completed swap messages of liquidity pool
 
 ```go
-resp, err := client.Staking.QuerySwapsFinish( 1)
+resp, err := client.Swap.QuerySwapsFinish( 1)
 ```
 
 #### WithdrawWithinBatch<a name="WithdrawWithinBatch"></a><br/>
@@ -90,7 +90,7 @@ res, err := client.Swap.WithdrawWithinBatch(request)
 > Query all completed withdraw message of liquidity pool by msg index
 
 ```go
-resp, err := client.Staking.QueryWithdrawFinish(1, 1)
+resp, err := client.Swap.QueryWithdrawFinish(1, 1)
 ```
 
 #### QueryWithdrawsFinish<a name="QueryWithdrawsFinish"></a><br/>
@@ -98,7 +98,7 @@ resp, err := client.Staking.QueryWithdrawFinish(1, 1)
 > Query all completed withdraw messages of liquidity pool
 
 ```go
-resp, err := client.Staking.QueryWithdrawsFinish(1)
+resp, err := client.Swap.QueryWithdrawsFinish(1)
 ```
 
 ## TX<a name="tx"></a><br/>
