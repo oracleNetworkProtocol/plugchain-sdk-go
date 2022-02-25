@@ -1,6 +1,6 @@
 # PLUGCHAIN SDK GO
 
-## STAKING MODULE
+## LIQUIDITY MODULE
 
 - [Query](#query)
     - [QueryPool](#QueryPool) --QueryPool
