@@ -146,3 +146,4 @@ For more API usage documentation, please check:<br/>
 [BASE](modules/auth/base.md)<br/>
 [GOV](modules/gov/gov.md)<br/>
 [STAKING](modules/staking/staking.md)<br/>
+[LIQUIDITY](modules/coinswap/coinswap.md)<br/>

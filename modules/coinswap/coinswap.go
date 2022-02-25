@@ -266,22 +266,22 @@ func (swap coinswapClient) PoolBatchDeposit(request PoolBatchDepositMsg) (interf
 	return resp, nil
 }
 
-//func (swap coinswapClient) QueryPool(lptDenom string) (*QueryPoolResponse, error) {
-//	conn, err := swap.GenConn()
-//	defer func() { _ = conn.Close() }()
-//	if err != nil {
-//		return nil, sdk.Wrap(err)
-//	}
-//
-//	resp, err := NewQueryClient(conn).LiquidityPool(
-//		context.Background(),
-//		&QueryLiquidityPoolRequest{LptDenom: lptDenom},
-//	)
-//	if err != nil {
-//		return nil, sdk.Wrap(err)
-//	}
-//	return resp.Convert().(*QueryPoolResponse), err
-//}
+func (swap coinswapClient) QueryPool(PoolId uint64) (*QueryPoolResponse, error) {
+	conn, err := swap.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	resp, err := NewQueryClient(conn).LiquidityPool(
+		context.Background(),
+		&QueryLiquidityPoolRequest{PoolId: PoolId},
+	)
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+	return resp.Convert().(*QueryPoolResponse), err
+}
 
 func (swap coinswapClient) QueryAllPools(req sdk.PageRequest) (interface{}, error) {
 	conn, err := swap.GenConn()
@@ -299,6 +299,123 @@ func (swap coinswapClient) QueryAllPools(req sdk.PageRequest) (interface{}, erro
 				Limit:      req.Limit,
 				CountTotal: req.CountTotal,
 			},
+		},
+	)
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+	return resp, err
+}
+
+func (swap coinswapClient) QueryDepositFinish(PoolId, MsgIndex uint64) (interface{}, error) {
+	conn, err := swap.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	resp, err := NewQueryClient(conn).PoolDepositSuccessMsg(
+		context.Background(),
+		&QueryPoolDepositSuccessMsgRequest{
+			PoolId:   PoolId,
+			MsgIndex: MsgIndex,
+		},
+	)
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+	return resp, err
+}
+
+func (swap coinswapClient) QueryDepositsFinish(PoolId uint64) (interface{}, error) {
+	conn, err := swap.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	resp, err := NewQueryClient(conn).PoolDepositSuccessMsgs(
+		context.Background(),
+		&QueryPoolDepositSuccessMsgsRequest{
+			PoolId: PoolId,
+		},
+	)
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+	return resp, err
+}
+
+func (swap coinswapClient) QuerySwapFinish(PoolId, MsgIndex uint64) (interface{}, error) {
+	conn, err := swap.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	resp, err := NewQueryClient(conn).PoolSwapSuccessMsg(
+		context.Background(),
+		&QueryPoolSwapSuccessMsgRequest{
+			PoolId:   PoolId,
+			MsgIndex: MsgIndex,
+		},
+	)
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+	return resp, err
+}
+
+func (swap coinswapClient) QuerySwapsFinish(PoolId uint64) (interface{}, error) {
+	conn, err := swap.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	resp, err := NewQueryClient(conn).PoolSwapSuccessMsgs(
+		context.Background(),
+		&QueryPoolSwapSuccessMsgsRequest{
+			PoolId: PoolId,
+		},
+	)
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+	return resp, err
+}
+
+func (swap coinswapClient) QueryWithdrawFinish(PoolId, MsgIndex uint64) (interface{}, error) {
+	conn, err := swap.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	resp, err := NewQueryClient(conn).PoolWithdrawSuccessMsg(
+		context.Background(),
+		&QueryPoolWithdrawSuccessMsgRequest{
+			PoolId:   PoolId,
+			MsgIndex: MsgIndex,
+		},
+	)
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+	return resp, err
+}
+
+func (swap coinswapClient) QueryWithdrawsFinish(PoolId uint64) (interface{}, error) {
+	conn, err := swap.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	resp, err := NewQueryClient(conn).PoolWithdrawSuccessMsgs(
+		context.Background(),
+		&QueryPoolWithdrawSuccessMsgsRequest{
+			PoolId: PoolId,
 		},
 	)
 	if err != nil {

@@ -30,8 +30,14 @@ type Client interface {
 	//) (res *SwapCoinResponse, err error)
 
 	PoolBatchDeposit(request PoolBatchDepositMsg) (interface{}, error)
-	//QueryPool(lptDenom string) (*QueryPoolResponse, error)
+	QueryPool(poolId uint64) (*QueryPoolResponse, error)
 	QueryAllPools(pageReq sdk.PageRequest) (interface{}, error)
+	QueryDepositFinish(poolId, msgIndex uint64) (interface{}, error)
+	QueryDepositsFinish(poolId uint64) (interface{}, error)
+	QuerySwapFinish(poolId, msgIndex uint64) (interface{}, error)
+	QuerySwapsFinish(poolId uint64) (interface{}, error)
+	QueryWithdrawFinish(poolId, msgIndex uint64) (interface{}, error)
+	QueryWithdrawsFinish(poolId uint64) (interface{}, error)
 	//EstimateTokenForSoldBase(tokenDenom string,
 	//	soldBase sdk.Int,
 	//) (sdk.Int, error)
