@@ -65,10 +65,10 @@ below
 
 | Iterm     | Type          | Description                                                                                           |
 |-----------|---------------|-------------------------------------------------------------------------------------------------------|
-| NodeURI   | string        | The RPC address of the PlugChain node connected to the SDK, for example: localhost: 26657               |
-| GRPCAddr  | string        | The GRPC address of the PlugChain node connected to the SDK, for example: localhost: 9090               |
+| NodeURI   | string        | The RPC address of the PlugChain node connected to the SDK, for example: localhost: 26657             |
+| GRPCAddr  | string        | The GRPC address of the PlugChain node connected to the SDK, for example: localhost: 9090             |
 | Network   | enum          | PlugChain network type, value: `Testnet`,`Mainnet`                                                    |
-| ChainID   | string        | ChainID of plugchain, for example: `chaintest-1`                                                      |
+| ChainID   | string        | ChainID of plugchain, for example: `chaintest_0-0`                                                    |
 | Gas       | uint64        | The maximum gas to be paid for the transaction, for example: `20000`                                  |
 | Fee       | DecCoins      | Transaction fees to be paid for transactions                                                          |
 | KeyDAO    | KeyDAO        | Private key management interface, If the user does not provide it, the default `LevelDB` will be used |
@@ -76,7 +76,7 @@ below
 | StoreType | enum          | Private key storage method, value: `Keystore`,`PrivKey`                                               |
 | Timeout   | time.Duration | Transaction timeout, for example: `5s`                                                                |
 | LogLevel  | string        | Log output level, for example: `info`                                                                 |
-| Algo      | string        | Private key generation algorithm(sm2,secp256k1), for example:`secp256k1`                              |
+| Algo      | string        | Private key generation algorithm(sm2,secp256k1,eth_secp256k1), for example:`eth_secp256k1`            |
 
 If you want to use `SDK` to send a transfer transaction, the example is as follows:
 
