@@ -82,12 +82,12 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 proposalId, res, err := client.Gov.SubmitProposal(gov.SubmitProposalRequest{
 	Title:          "Community Pool Spend",
 	Description:    "Pay me some Atoms!",
 	Type:           "Text",
-	InitialDeposit: types.NewDecCoins(types.NewDecCoin("plug", types.NewInt(1000))),
+	InitialDeposit: types.NewDecCoins(types.NewDecCoin("uplugcn", types.NewInt(1000))),
 }, baseTx)
 ```
 
@@ -102,8 +102,8 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
-amount, err := types.ParseDecCoins("2000plug")
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
+amount, err := types.ParseDecCoins("2000uplugcn")
 res, err := client.Gov.Deposit(gov.DepositRequest{
 	ProposalId: 3,
 	Amount:     amount,
@@ -121,7 +121,7 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 voteReq := gov.VoteRequest{
 	ProposalId: 5,
 	Option:     "VOTE_OPTION_YES",

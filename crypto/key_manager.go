@@ -9,7 +9,6 @@ import (
 	"github.com/tendermint/tendermint/crypto"
 
 	"github.com/cosmos/go-bip39"
-
 	cryptoAmino "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/codec"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/hd"
 )

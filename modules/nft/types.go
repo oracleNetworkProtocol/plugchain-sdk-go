@@ -29,7 +29,7 @@ var (
 	RegexAlphaNumeric = regexp.MustCompile(`^[a-z0-9]+$`).MatchString
 	RegexAlphaTop     = regexp.MustCompile(`^[a-z].*`).MatchString
 
-	keyWords         = strings.Join([]string{"ibc", "plug"}, "|")
+	keyWords         = strings.Join([]string{"ibc", "uplugcn"}, "|")
 	regexpKeywordFmt = fmt.Sprintf("^(%s).*", keyWords)
 	regexpKeyword    = regexp.MustCompile(regexpKeywordFmt).MatchString
 

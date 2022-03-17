@@ -116,10 +116,10 @@ Gas:      200000,
 Mode:     types.Commit,
 Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 request := coinswap.AddLiquidityRequest{
 BaseToken: types.Coin{
-Denom:  "plug",
+Denom:  "uplugcn",
 Amount: types.NewInt(5000000),
 },
 Token: types.Coin{
@@ -143,10 +143,10 @@ Gas:      200000,
 Mode:     types.Commit,
 Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 request := coinswap.DepositWithinBatchRequest{
 BaseToken: types.Coin{
-Denom:  "plug",
+Denom:  "uplugcn",
 Amount: types.NewInt(5000),
 },
 Token: types.Coin{
@@ -171,7 +171,7 @@ Gas:      200000,
 Mode:     types.Commit,
 Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 request := coinswap.WithdrawWithinRequest{
 PoolId:   1,
 PoolCoin: types.Coin{"pool1F9D08EC2F71CFF36479EE3861FCFFB46F3CBB4F3514FF7D17985BE30A708FE5", types.NewInt(1000)},
@@ -192,10 +192,10 @@ Gas:      200000,
 Mode:     types.Commit,
 Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 request := coinswap.SwapCoinRequest{
 PoolId:          1,
-OfferCoin:       types.Coin{"plug", types.NewInt(1000)},
+OfferCoin:       types.Coin{"uplugcn", types.NewInt(1000)},
 DemandCoinDenom: "tts",
 SwapFeeRate:     "0.003",
 OrderPrice:      "0.019",

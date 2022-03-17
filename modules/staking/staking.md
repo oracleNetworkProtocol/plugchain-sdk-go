@@ -137,12 +137,12 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 rate := types.MustNewDecFromStr("0.1")
 maxRate := types.MustNewDecFromStr("0.1")
 maxChangeRate := types.MustNewDecFromStr("0.01")
 minSelfDelegation := types.OneInt()
-value, _ := types.ParseDecCoin("1plug")
+value, _ := types.ParseDecCoin("1uplugcn")
 req1 := staking.CreateValidatorRequest{
 	Moniker:           "haha",
 	Rate:              rate,
@@ -166,7 +166,7 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 commissionRate := types.MustNewDecFromStr("0.1")
 minSelfDelegation := types.OneInt()
 req1 := staking.EditValidatorRequest{
@@ -192,8 +192,8 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
-amount, _ := types.ParseDecCoin("10000plug")
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
+amount, _ := types.ParseDecCoin("10000uplugcn")
 delegateReq := staking.DelegateRequest{
 	ValidatorAddr: "gxvaloper1xyu87sqeuv3wfqmnfqcq3vglpgg6dp4nwzyu2e",
 	Amount:        amount,
@@ -212,8 +212,8 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
-amount, _ := types.ParseDecCoin("500plug")
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
+amount, _ := types.ParseDecCoin("500uplugcn")
 undelegateReq := staking.UndelegateRequest{
 	ValidatorAddr: "gxvaloper1xyu87sqeuv3wfqmnfqcq3vglpgg6dp4nwzyu2e",
 	Amount:        amount,
@@ -232,8 +232,8 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
-amount, _ := types.ParseDecCoin("500plug")
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
+amount, _ := types.ParseDecCoin("500uplugcn")
 redelegateReq := staking.BeginRedelegateRequest{
 	ValidatorSrcAddress: "gxvaloper1xyu87sqeuv3wfqmnfqcq3vglpgg6dp4nwzyu2e",
 	ValidatorDstAddress: "",

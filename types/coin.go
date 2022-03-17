@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	BaseDenom = "plug"
+	BaseDenom = "uplugcn"
 )
 
 func NewCoin(denom string, amount Int) Coin {

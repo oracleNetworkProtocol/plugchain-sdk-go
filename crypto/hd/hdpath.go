@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	BIP44Prefix = "44'/118'/"
+	BIP44Prefix = "44'/60'/"
 	PartialPath = "0'/0/0"
 	FullPath    = BIP44Prefix + PartialPath
 )

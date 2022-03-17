@@ -17,7 +17,7 @@
 >QueryAccount return account information specified address
 ```go
 balance, err := client.Bank.QueryAccount("gx1yhf7w0sq8yn6gqre2pulnqwyy30tjfc4v08f3x")
-plug:=balance.Coins.AmountOf("plug")
+plug:=balance.Coins.AmountOf("uplugcn")
 ```
 
 #### TotalSupply<a name="supply"></a><br/>
@@ -41,8 +41,8 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
-coins, err := types.ParseDecCoins("100000plug")   //Transfer out quantity + currency name, for example:100000plug
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
+coins, err := types.ParseDecCoins("100000uplugcn")   //Transfer out quantity + currency name, for example:100000plug
 to := "gx1akqhezuftdcc0eqzkq5peqpjlucgmyr7srx54j" //Receiving address
 result, err := client.Bank.Send(to, coins, baseTx)
 ```
@@ -60,7 +60,7 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-coins, err := types.ParseCoins("100000plug")
+coins, err := types.ParseCoins("100000uplugcn")
 from := "gx1yhf7w0sq8yn6gqre2pulnqwyy30tjfc4v08f3x"
 to := "gx1akqhezuftdcc0eqzkq5peqpjlucgmyr7srx54j"
 msg := &bank.MsgSend{

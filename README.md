@@ -92,8 +92,8 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug")
-coins, err := types.ParseDecCoins("100000plug")
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn")
+coins, err := types.ParseDecCoins("100000uplugcn")
 to := "gx1akqhezuftdcc0eqzkq5peqpjlucgmyr7srx54j"
 result, err := client.Bank.Send(to, coins, baseTx)
 ```
@@ -123,8 +123,8 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug")
-coins, err := types.ParseCoins("100000plug")
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn")
+coins, err := types.ParseCoins("100000uplugcn")
 from := "gx1yhf7w0sq8yn6gqre2pulnqwyy30tjfc4v08f3x"
 to := "gx1akqhezuftdcc0eqzkq5peqpjlucgmyr7srx54j"
 msg := &bank.MsgSend{

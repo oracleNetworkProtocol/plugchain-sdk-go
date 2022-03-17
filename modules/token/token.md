@@ -56,7 +56,7 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 issueTokenReq := token.IssueTokenRequest{
 	Symbol:        "test1",
 	Name:          "testToken",
@@ -80,7 +80,7 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 editTokenReq := token.EditTokenRequest{
     Symbol:    "test1",
     Name:      "testToken66",
@@ -100,7 +100,7 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 rs, err := client.Token.TransferToken("gx1akqhezuftdcc0eqzkq5peqpjlucgmyr7srx54j", "test1", baseTx)
 ```
 
@@ -115,7 +115,7 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 rs, err = client.Token.MintToken("test1", 11000000, "gx1yhf7w0sq8yn6gqre2pulnqwyy30tjfc4v08f3x", baseTx)
 ```
 

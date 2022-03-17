@@ -12,8 +12,8 @@ const (
 	defaultTimeout       = 5
 	defaultPath          = "$HOME/plugchain-sdk-go/leveldb"
 	defaultLogLevel      = "info"
-	defaultAlgo          = "secp256k1"
-	defaultFees          = "200plug"
+	defaultAlgo          = "eth_secp256k1"
+	defaultFees          = "200uplugcn"
 	defaultMode          = Sync
 	defaultGasAdjustment = 1.0
 )

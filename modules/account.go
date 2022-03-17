@@ -3,13 +3,13 @@ package modules
 import (
 	"context"
 	"fmt"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/bank"
 	"time"
 
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/auth"
-	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/bank"
 	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/utils/cache"
 )
@@ -61,12 +61,17 @@ func (a accountQuery) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) 
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
+	//var baseAccount auth.Account
 	var baseAccount auth.Account
 	if err := a.cdc.UnpackAny(response.Account, &baseAccount); err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
-
-	account := baseAccount.(*auth.BaseAccount).ConvertAccount(a.cdc).(sdk.BaseAccount)
+	var account sdk.BaseAccount
+	if fmt.Sprintf("%T", baseAccount) == "*auth.EthAccount" {
+		account = baseAccount.(*auth.EthAccount).ConvertAccount(a.cdc).(sdk.BaseAccount)
+	} else {
+		account = baseAccount.(*auth.BaseAccount).ConvertAccount(a.cdc).(sdk.BaseAccount)
+	}
 
 	breq := &bank.QueryAllBalancesRequest{
 		Address:    address,

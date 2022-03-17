@@ -85,7 +85,7 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 request := nft.IssueDenomRequest{
 	ID:             "a123",//The name of the collection
 	Name:           "aad",//The name of the class
@@ -108,7 +108,7 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 request := nft.MintNFTRequest{
     ID:        "a1231",//The id of the nft
     ClassID:   "a123",//The name of the collection
@@ -145,7 +145,7 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 request := nft.EditNFTRequest{
     ID:        "a1231",//The id of the nft
     ClassID:   "a123",//The name of the collection
@@ -167,7 +167,7 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 request := nft.TransferNFTRequest{
     ID:        "a1231",//The id of the nft
     ClassID:   "a123",//The name of the collection
@@ -187,7 +187,7 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 request := nft.TransferClassRequest{
     ID:        "a123",//The name of the collection
     Recipient: "gx1akqhezuftdcc0eqzkq5peqpjlucgmyr7srx54j",
@@ -206,7 +206,7 @@ baseTx := types.BaseTx{
     Mode:     types.Commit,
     Memo:     "test",
 }
-baseTx.Fee, err = types.ParseDecCoins("2000plug") //Fee
+baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
 request := nft.BurnNFTRequest{
     ID:        "a1231",//The id of the nft
     ClassID:   "a123",//The name of the collection

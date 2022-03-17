@@ -2,7 +2,7 @@ package bank
 
 import (
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
-	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
+	types2 "github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
 	cryptocodec "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/codec"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/auth"
 	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
@@ -18,7 +18,7 @@ func init() {
 	amino.Seal()
 }
 
-func RegisterInterfaces(registry types.InterfaceRegistry) {
+func RegisterInterfaces(registry types2.InterfaceRegistry) {
 	registry.RegisterImplementations(
 		(*sdk.Msg)(nil),
 		&MsgSend{},
@@ -28,6 +28,10 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations(
 		(*auth.Account)(nil),
 		&auth.BaseAccount{},
-		//&auth.EthAccount{},
+		&auth.EthAccount{},
 	)
+	//registry.RegisterImplementations(
+	//	(*auth.EthAccount)(nil),
+	//	&auth.EthAccount{},
+	//)
 }
