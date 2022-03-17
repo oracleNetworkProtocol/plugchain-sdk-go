@@ -46,7 +46,7 @@ The initialization SDK code is as follows:
 var (
 nodeURI string = "tcp://127.0.0.1:26657"
 grpcURL string = "127.0.0.1:9090"
-chainID string = "chain_test-1"
+chainID string = "chaintest_0-0"
 )
 
 options := []types.Option{
