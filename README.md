@@ -44,18 +44,18 @@ The initialization SDK code is as follows:
 
 ```go
 var (
-    nodeURI string = "tcp://127.0.0.1:26657"
-    grpcURL string = "127.0.0.1:9090"
-    chainID string = "chaintest-1"
+nodeURI string = "tcp://127.0.0.1:26657"
+grpcURL string = "127.0.0.1:9090"
+chainID string = "chain_test-1"
 )
 
 options := []types.Option{
-    types.KeyDAOOption(store.NewMemory(nil)),
-    types.TimeoutOption(10),
+types.KeyDAOOption(store.NewMemory(nil)),
+types.TimeoutOption(10),
 }
 cfg, err := types.NewClientConfig(nodeURI, grpcURL, chainID, options...)
 if err != nil {
-    panic(err)
+panic(err)
 }
 client := plugchain_sdk.NewPLUGCHAINClient(cfg)
 ```
@@ -86,11 +86,11 @@ There is more example of query and send tx
 //Import keystore
 err:= client.Key.Import("username", "passward", string(getPrivKeyArmor()))
 baseTx := types.BaseTx{
-    From:     "username",
-    Password: "passward",
-    Gas:      200000,
-    Mode:     types.Commit,
-    Memo:     "test",
+From:     "username",
+Password: "passward",
+Gas:      200000,
+Mode:     types.Commit,
+Memo:     "test",
 }
 baseTx.Fee, err = types.ParseDecCoins("2000uplugcn")
 coins, err := types.ParseDecCoins("100000uplugcn")
@@ -117,20 +117,20 @@ get TxHash before sending transactions
     //Import keystore
 err:= client.Key.Import("username", "passward", string(getPrivKeyArmor()))
 baseTx := types.BaseTx{
-    From:     "username",
-    Password: "passward",
-    Gas:      200000,
-    Mode:     types.Commit,
-    Memo:     "test",
+From:     "username",
+Password: "passward",
+Gas:      200000,
+Mode:     types.Commit,
+Memo:     "test",
 }
 baseTx.Fee, err = types.ParseDecCoins("2000uplugcn")
 coins, err := types.ParseCoins("100000uplugcn")
 from := "gx1yhf7w0sq8yn6gqre2pulnqwyy30tjfc4v08f3x"
 to := "gx1akqhezuftdcc0eqzkq5peqpjlucgmyr7srx54j"
 msg := &bank.MsgSend{
-    FromAddress: from,
-    ToAddress:   to,
-    Amount:      coins,
+FromAddress: from,
+ToAddress:   to,
+Amount:      coins,
 }
 txhash, err := client.BuildTxHash([]types.Msg{msg}, baseTx)
 ```
