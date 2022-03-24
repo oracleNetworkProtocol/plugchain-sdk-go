@@ -1,6 +1,9 @@
 package keys
 
 import (
+	"github.com/ethereum/go-ethereum/crypto"
+	crypto2 "github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/keys/ethsecp256k1"
 	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
 
@@ -48,4 +51,14 @@ func (k keysClient) Show(name, password string) (string, sdk.Error) {
 		return "", sdk.Wrap(err)
 	}
 	return address.String(), nil
+}
+
+func (k keysClient) Ethsecp256k1TOSecp256k1(keystr, password string) string {
+	priv, err := crypto.HexToECDSA(keystr)
+	if err != nil {
+		return keystr
+	}
+	priKey := &ethsecp256k1.PrivKey{Key: crypto.FromECDSA(priv)}
+	secp256k1Keystr := crypto2.EncryptArmorPrivKey(priKey, password, ethsecp256k1.Ethsecp256k1keyType)
+	return secp256k1Keystr
 }

@@ -12,4 +12,5 @@ type Client interface {
 	Export(name, password string) (privKeyArmor string, err sdk.Error)
 	Delete(name, password string) sdk.Error
 	Show(name, password string) (string, sdk.Error)
+	Ethsecp256k1TOSecp256k1(keystr, password string) string
 }

@@ -22,8 +22,8 @@ var _ codec.AminoMarshaler = &PrivKey{}
 const (
 	Ethsecp256k1PrivKeySize = 32
 	Ethsecp256k1keyType     = "eth_secp256k1"
-	Ethsecp256k1PrivKeyName = "tendermint/PrivKeyEthSecp256k1"
-	Ethsecp256k1PubKeyName  = "tendermint/PubKeyEthSecp256k1"
+	PubKeyName              = "ethermint/PubKeyEthSecp256k1"
+	PrivKeyName             = "ethermint/PrivKeyEthSecp256k1"
 )
 
 // Bytes returns the byte representation of the Private Key.
