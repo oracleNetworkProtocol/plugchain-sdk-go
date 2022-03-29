@@ -32,6 +32,7 @@ type Account interface {
 
 	GetSequence() uint64
 	SetSequence(uint64) error
+	String() string
 }
 
 var _ Account = (*BaseAccount)(nil)

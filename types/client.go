@@ -24,6 +24,7 @@ type Queries interface {
 
 type GRPCClient interface {
 	GenConn() (*grpc.ClientConn, error)
+	GenContext() (*grpc.ClientConn, error)
 }
 
 type ParamQuery interface {
@@ -37,7 +38,7 @@ type StoreQuery interface {
 }
 
 type AccountQuery interface {
-	QueryAccount(address string) (BaseAccount, Error)
+	QueryAccount(address string, clientCtx Context) (BaseAccount, Error)
 	QueryAddress(name, password string) (AccAddress, Error)
 }
 

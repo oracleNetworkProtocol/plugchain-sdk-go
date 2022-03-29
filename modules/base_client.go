@@ -372,7 +372,8 @@ func (base *baseClient) prepare(baseTx sdk.BaseTx) (*clienttx.Factory, error) {
 			WithSequence(baseTx.Sequence).
 			WithPassword(baseTx.Password)
 	} else {
-		account, err := base.QueryAndRefreshAccount(addr.String())
+
+		account, err := base.QueryAndRefreshAccount(addr.String(), base)
 		if err != nil {
 			return nil, err
 		}

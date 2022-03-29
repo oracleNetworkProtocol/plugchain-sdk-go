@@ -211,6 +211,7 @@ func (registry *interfaceRegistry) UnpackAny(any *Any, iface interface{}) error 
 			return nil
 		}
 	}
+
 	imap, found := registry.interfaceImpls[rt]
 	if !found {
 		return fmt.Errorf("no registered implementations of type %+v", rt)

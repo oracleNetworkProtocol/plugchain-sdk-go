@@ -4,9 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/bank"
-	"time"
-
 	"github.com/tendermint/tendermint/libs/log"
+	"time"
 
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/auth"
@@ -25,10 +24,10 @@ type accountQuery struct {
 	expiration time.Duration
 }
 
-func (a accountQuery) QueryAndRefreshAccount(address string) (sdk.BaseAccount, sdk.Error) {
+func (a accountQuery) QueryAndRefreshAccount(address string, base *baseClient) (sdk.BaseAccount, sdk.Error) {
 	account, err := a.Get(a.prefixKey(address))
 	if err != nil {
-		return a.refresh(address)
+		return a.refresh(address, base)
 	}
 
 	acc := account.(accountInfo)
@@ -43,7 +42,7 @@ func (a accountQuery) QueryAndRefreshAccount(address string) (sdk.BaseAccount, s
 	return baseAcc, nil
 }
 
-func (a accountQuery) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) {
+func (a accountQuery) QueryAccount(address string, clientCtx sdk.Context) (sdk.BaseAccount, sdk.Error) {
 	conn, err := a.GenConn()
 	defer func() {
 		_ = conn.Close()
@@ -56,7 +55,8 @@ func (a accountQuery) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) 
 		Address: address,
 	}
 
-	response, err := auth.NewQueryClient(conn).Account(context.Background(), request)
+	response, err := auth.NewQueryClient(clientCtx).Account(context.Background(), request)
+	//response, err := auth.NewQueryClient(conn).Account(context.Background(), request)
 	if err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
@@ -115,8 +115,12 @@ func (a accountQuery) removeCache(address string) bool {
 	return a.Remove(a.prefixKey(address))
 }
 
-func (a accountQuery) refresh(address string) (sdk.BaseAccount, sdk.Error) {
-	account, err := a.QueryAccount(address)
+func (a accountQuery) refresh(address string, base *baseClient) (sdk.BaseAccount, sdk.Error) {
+	clientCtx := sdk.Context{
+		Client:            NewBaseClient(*base.cfg, base.encodingConfig, nil),
+		InterfaceRegistry: base.encodingConfig.InterfaceRegistry,
+	}
+	account, err := a.QueryAccount(address, clientCtx)
 	if err != nil {
 		a.Error("update cache failed", "address", address, "errMsg", err.Error())
 		return sdk.BaseAccount{}, sdk.Wrap(err)
