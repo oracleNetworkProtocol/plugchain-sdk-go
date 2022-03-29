@@ -8,6 +8,7 @@
 - [TX](#tx)
   - [Send](#send) --Transfer
   - [MsgSend](#msgsend) --MsgSend
+  - [MultiSendRequest](#multisendrequest) --MultiSendRequest
 
 # realization
 
@@ -58,6 +59,30 @@ result, err := client.Bank.Send(to, coins, baseTx)
 **You need to import the private key before you can operate，Please see the key package for importing the private key**
 ```go
 baseTx := types.BaseTx{
+From:     "demo", //Account name 
+Password: "123123123",
+Gas:      200000,
+Mode:     types.Commit,
+Memo:     "test",
+}
+coins, err := types.ParseCoins("100000uplugcn")
+from := "gx1yhf7w0sq8yn6gqre2pulnqwyy30tjfc4v08f3x"
+to := "gx1akqhezuftdcc0eqzkq5peqpjlucgmyr7srx54j"
+msg := &bank.MsgSend{
+FromAddress: from,
+ToAddress:   to,
+Amount:      coins,
+}
+txhash, err := client.BuildTxHash([]types.Msg{msg}, baseTx)
+```
+
+
+#### MultiSendRequest<a name="multisendrequest"></a><br/>
+>One to many transaction
+
+**You need to import the private key before you can operate，Please see the key package for importing the private key**
+```go
+baseTx := types.BaseTx{
     From:     "demo", //Account name 
     Password: "123123123",
     Gas:      200000,
@@ -65,12 +90,11 @@ baseTx := types.BaseTx{
     Memo:     "test",
 }
 coins, err := types.ParseCoins("100000uplugcn")
-from := "gx1yhf7w0sq8yn6gqre2pulnqwyy30tjfc4v08f3x"
-to := "gx1akqhezuftdcc0eqzkq5peqpjlucgmyr7srx54j"
-msg := &bank.MsgSend{
-    FromAddress: from,
-    ToAddress:   to,
-    Amount:      coins,
-}
-txhash, err := client.BuildTxHash([]types.Msg{msg}, baseTx)
+
+coinss, err := types.ParseDecCoins("1000uplugcn")
+mmm := bank.MultiSendRequest{[]bank.Receipt{
+{Address: "gx1m6jpgfptpwsxmq7w88z30tsxp22ncwe4fakmnh", Amount:  coinss},
+{Address: "gx1jfdv0jrmjr8pye40nwc7hd79k5j4xp2hrnfq34", Amount:  coinss},
+}}
+results, err := client.Bank.MultiSend(mmm, baseTx)
 ```
