@@ -16,7 +16,11 @@
 #### QueryAccount<a name="account"></a><br/>
 >QueryAccount return account information specified address
 ```go
-balance, err := client.Bank.QueryAccount("gx1yhf7w0sq8yn6gqre2pulnqwyy30tjfc4v08f3x")
+clientCtx := types.Context{
+Client:            client.BaseClient,
+InterfaceRegistry: client.EncodingConfig().InterfaceRegistry,
+}
+balance, err := client.Bank.QueryAccount("gx1h3vghuc356mah5swu9fy27fzrr20qe3pqfp6rw", clientCtx)
 plug:=balance.Coins.AmountOf("uplugcn")
 ```
 
