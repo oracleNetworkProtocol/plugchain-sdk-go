@@ -410,6 +410,56 @@ func (base *baseClient) prepare(baseTx sdk.BaseTx) (*clienttx.Factory, error) {
 	return factory, nil
 }
 
+func (base *baseClient) mutilprepare(baseTx sdk.BaseTx, account map[string]string) (*clienttx.Factory, error) {
+	factory := clienttx.NewFactory().
+		WithChainID(base.cfg.ChainId).
+		WithKeyManager(base.KeyManager).
+		WithMode(base.cfg.Mode).
+		WithSimulateAndExecute(baseTx.Simulate).
+		WithGas(base.cfg.Gas).
+		WithSignModeHandler(tx.MakeSignModeHandler(tx.DefaultSignModes)).
+		WithTxConfig(base.encodingConfig.TxConfig)
+
+	for name, pass := range account {
+		addr, err := base.QueryAddress(name, pass)
+		if err != nil {
+			return nil, err
+		}
+		_account, err := base.QueryAndRefreshAccount(addr.String(), base)
+		if err != nil {
+			return nil, err
+		}
+		factory.WithTranAggrc(name, addr.String(), pass, _account.AccountNumber, _account.Sequence)
+	}
+
+	if !baseTx.Fee.Empty() && baseTx.Fee.IsValid() {
+		fees, err := base.ToMinCoin(baseTx.Fee...)
+		if err != nil {
+			return nil, err
+		}
+		factory.WithFee(fees)
+	} else {
+		fees, err := base.ToMinCoin(base.cfg.Fee...)
+		if err != nil {
+			panic(err)
+		}
+		factory.WithFee(fees)
+	}
+
+	if len(baseTx.Mode) > 0 {
+		factory.WithMode(baseTx.Mode)
+	}
+
+	if baseTx.Gas > 0 {
+		factory.WithGas(baseTx.Gas)
+	}
+
+	if len(baseTx.Memo) > 0 {
+		factory.WithMemo(baseTx.Memo)
+	}
+	return factory, nil
+}
+
 func (l *locker) Lock(key string) {
 	ch := l.getShard(key)
 	ch <- 1
@@ -433,4 +483,24 @@ func (l *locker) indexFor(key string) uint32 {
 		hash ^= uint32(key[i])
 	}
 	return hash
+}
+
+func (base *baseClient) BuildAndSends(msg []sdk.Msg, baseTx sdk.BaseTx, account map[string]string, addr []string) (sdk.ResultTx, sdk.Error) {
+	txByte, ctx, err := base.buildTxs(msg, baseTx, account)
+	if err != nil {
+		return sdk.ResultTx{}, err
+	}
+
+	res, err := base.broadcastTx(txByte, ctx.Mode(), baseTx.Simulate)
+	if err != nil {
+		if base.cfg.Cached {
+			for _, v := range addr {
+				_ = base.removeCache(v)
+			}
+		}
+
+		base.Logger().Error("broadcast transaction failed", "errMsg", err.Error())
+		return res, err
+	}
+	return res, nil
 }

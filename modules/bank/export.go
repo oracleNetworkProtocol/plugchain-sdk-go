@@ -11,6 +11,7 @@ type Client interface {
 	Send(to string, amount sdk.DecCoins, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 	SendWitchSpecAccountInfo(to string, sequence, accountNumber uint64, amount sdk.DecCoins, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 	MultiSend(receipts MultiSendRequest, baseTx sdk.BaseTx) ([]sdk.ResultTx, sdk.Error)
+	MultiToMultiSend(receipts MultiToMultiSendRequest, baseTx sdk.BaseTx) ([]sdk.ResultTx, sdk.Error)
 	SubscribeSendTx(from, to string, callback EventMsgSendCallback) sdk.Subscription
 
 	QueryAccount(address string, clientCtx sdk.Context) (sdk.BaseAccount, sdk.Error)
@@ -24,6 +25,17 @@ type Receipt struct {
 
 type MultiSendRequest struct {
 	Receipts []Receipt
+}
+
+type MutilReceipt struct {
+	From     string       `json:"from"`
+	Password string       `json:"password"`
+	To       string       `json:"to"`
+	Amount   sdk.DecCoins `json:"amount"`
+}
+
+type MultiToMultiSendRequest struct {
+	Receipts []MutilReceipt
 }
 
 func (msr MultiSendRequest) Len() int {

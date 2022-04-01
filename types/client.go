@@ -14,6 +14,8 @@ type TxManager interface {
 	BuildAndSign(msg []Msg, baseTx BaseTx) ([]byte, Error)
 	SendBatch(msgs Msgs, baseTx BaseTx) ([]ResultTx, Error)
 	BuildAndSendWithAccount(addr string, accountNumber, sequence uint64, msg []Msg, baseTx BaseTx) (ResultTx, Error)
+	//BuildAndSends(txByte []byte, ctxMode BroadcastMode, simulate bool, addr []string) (ResultTx, Error)
+	BuildAndSends(msg []Msg, baseTx BaseTx, account map[string]string, addr []string) (ResultTx, Error)
 }
 
 type Queries interface {

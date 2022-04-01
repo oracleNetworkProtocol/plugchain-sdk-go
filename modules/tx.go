@@ -113,6 +113,21 @@ func (base *baseClient) buildTx(msgs []sdk.Msg, baseTx sdk.BaseTx) ([]byte, *cli
 	return txByte, builder, nil
 }
 
+func (base *baseClient) buildTxs(msgs []sdk.Msg, baseTx sdk.BaseTx, account map[string]string) ([]byte, *clienttx.Factory, sdk.Error) {
+	builder, err := base.mutilprepare(baseTx, account)
+	if err != nil {
+		return nil, builder, sdk.Wrap(err)
+	}
+
+	txByte, err := builder.BuildAndSigns(msgs, false)
+	if err != nil {
+		return nil, builder, sdk.Wrap(err)
+	}
+
+	base.Logger().Debug("sign transaction success")
+	return txByte, builder, nil
+}
+
 func (base *baseClient) buildTxWithAccount(addr string, accountNumber, sequence uint64, msgs []sdk.Msg, baseTx sdk.BaseTx) ([]byte, *clienttx.Factory, sdk.Error) {
 	builder, err := base.prepareTemp(addr, accountNumber, sequence, baseTx)
 	if err != nil {

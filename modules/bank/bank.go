@@ -138,6 +138,42 @@ func (b bankClient) MultiSend(request MultiSendRequest, baseTx sdk.BaseTx) (resT
 	return
 }
 
+func (b bankClient) MultiToMultiSend(request MultiToMultiSendRequest, baseTx sdk.BaseTx) (resTxs []sdk.ResultTx, err sdk.Error) {
+	if len(request.Receipts) > maxMsgLen {
+		//return b.SendBatch(sender, request, baseTx)
+	}
+	var inputs = make([]Input, len(request.Receipts))
+	var outputs = make([]Output, len(request.Receipts))
+	var account = make(map[string]string, len(request.Receipts))
+	var addr = make([]string, len(request.Receipts))
+	for i, receipt := range request.Receipts {
+		amt, err := b.ToMinCoin(receipt.Amount...)
+		if err != nil {
+			return nil, sdk.Wrap(err)
+		}
+		_, sender, err1 := b.Find(receipt.From, receipt.Password)
+		if err1 != nil {
+			return nil, sdk.Wrapf("%s not found", receipt.From)
+		}
+		outAddr, e := sdk.AccAddressFromBech32(receipt.To)
+		if e != nil {
+			return nil, sdk.Wrapf(fmt.Sprintf("%s invalid address", receipt.To))
+		}
+		inputs[i] = NewInput(sender, amt)
+		outputs[i] = NewOutput(outAddr, amt)
+		account[receipt.From] = receipt.Password
+		addr[i] = sender.String()
+	}
+	msg := NewMsgMultiSend(inputs, outputs)
+	res, err := b.BuildAndSends([]sdk.Msg{msg}, baseTx, account, addr)
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	resTxs = append(resTxs, res)
+	return
+}
+
 func (b bankClient) SendBatch(sender sdk.AccAddress,
 	request MultiSendRequest, baseTx sdk.BaseTx) ([]sdk.ResultTx, sdk.Error) {
 	batchReceipts := utils.SubArray(maxMsgLen, request)

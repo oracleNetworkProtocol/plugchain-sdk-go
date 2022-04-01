@@ -3,7 +3,6 @@ package tx
 import (
 	"errors"
 	"fmt"
-
 	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx/signing"
 )
@@ -30,10 +29,18 @@ type (
 		keyManager         sdk.KeyManager
 		txConfig           sdk.TxConfig
 		queryFunc          QueryWithData
+		tranAggr           []transferAggregate
 	}
 
 	// QueryWithData implements a query method from cschain.
-	QueryWithData func(string, []byte) ([]byte, int64, error)
+	QueryWithData     func(string, []byte) ([]byte, int64, error)
+	transferAggregate struct {
+		name          string
+		address       string
+		password      string
+		accountNumber uint64
+		sequence      uint64
+	}
 )
 
 // NewFactory return a point of the instance of Factory.
@@ -168,6 +175,17 @@ func (f *Factory) WithQueryFunc(queryFunc QueryWithData) *Factory {
 	return f
 }
 
+func (f *Factory) WithTranAggrc(name, address, pass string, accountNumber, sequence uint64) *Factory {
+	f.tranAggr = append(f.tranAggr, transferAggregate{
+		name:          name,
+		address:       address,
+		password:      pass,
+		accountNumber: accountNumber,
+		sequence:      sequence,
+	})
+	return f
+}
+
 func (f *Factory) BuildAndSign(name string, msgs []sdk.Msg, json bool) ([]byte, error) {
 	tx, err := f.BuildUnsignedTx(msgs)
 	if err != nil {
@@ -194,7 +212,71 @@ func (f *Factory) BuildAndSign(name string, msgs []sdk.Msg, json bool) ([]byte, 
 	return txBytes, nil
 }
 
+func (f *Factory) BuildAndSigns(msgs []sdk.Msg, json bool) ([]byte, error) {
+	tx, err := f.BuildUnsignedTxs(msgs)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = f.Signs(tx); err != nil {
+		return nil, err
+	}
+
+	if json {
+		txBytes, err := f.txConfig.TxJSONEncoder()(tx.GetTx())
+		if err != nil {
+			return nil, err
+		}
+		return txBytes, nil
+	}
+
+	txBytes, err := f.txConfig.TxEncoder()(tx.GetTx())
+	if err != nil {
+		return nil, err
+	}
+
+	return txBytes, nil
+}
+
 func (f *Factory) BuildUnsignedTx(msgs []sdk.Msg) (sdk.TxBuilder, error) {
+	if f.chainID == "" {
+		return nil, fmt.Errorf("chain ID required but not specified")
+	}
+
+	fees := f.fees
+
+	if !f.gasPrices.IsZero() {
+		if !fees.IsZero() {
+			return nil, errors.New("cannot provide both fees and gas prices")
+		}
+
+		glDec := sdk.NewDec(int64(f.gas))
+
+		// Derive the fees based on the provided gas prices, where
+		// fee = ceil(gasPrice * gasLimit).
+		fees = make(sdk.Coins, len(f.gasPrices))
+
+		for i, gp := range f.gasPrices {
+			fee := gp.Amount.Mul(glDec)
+			fees[i] = sdk.NewCoin(gp.Denom, fee.Ceil().RoundInt())
+		}
+	}
+
+	tx := f.txConfig.NewTxBuilder()
+
+	if err := tx.SetMsgs(msgs...); err != nil {
+		return nil, err
+	}
+
+	tx.SetMemo(f.memo)
+	tx.SetFeeAmount(fees)
+	tx.SetGasLimit(f.gas)
+	//f.txBuilder.SetTimeoutHeight(f.TimeoutHeight())
+
+	return tx, nil
+}
+
+func (f *Factory) BuildUnsignedTxs(msgs []sdk.Msg) (sdk.TxBuilder, error) {
 	if f.chainID == "" {
 		return nil, fmt.Errorf("chain ID required but not specified")
 	}
@@ -297,4 +379,53 @@ func (f *Factory) Sign(name string, txBuilder sdk.TxBuilder) error {
 
 	// And here the tx is populated with the signature
 	return txBuilder.SetSignatures(sig)
+}
+
+func (f *Factory) Signs(txBuilder sdk.TxBuilder) error {
+	signMode := f.signMode
+	if signMode == signing.SignMode_SIGN_MODE_UNSPECIFIED {
+		// use the SignModeHandler's default mode if unspecified
+		signMode = f.txConfig.SignModeHandler().DefaultMode()
+	}
+	sigs := make([]signing.SignatureV2, len(f.tranAggr))
+	for i, ta := range f.tranAggr {
+		pubkey, _, err := f.keyManager.Find(ta.name, ta.password)
+		if err != nil {
+			return err
+		}
+		// Construct the SignatureV2 struct
+		sigData := signing.SingleSignatureData{
+			SignMode:  signMode,
+			Signature: nil,
+		}
+		sigs[i] = signing.SignatureV2{
+			PubKey:   pubkey,
+			Data:     &sigData,
+			Sequence: ta.sequence,
+		}
+	}
+	if err := txBuilder.SetSignatures(sigs...); err != nil {
+		return err
+	}
+	for i, ta := range f.tranAggr {
+		signerData := sdk.SignerData{
+			ChainID:       f.chainID,
+			AccountNumber: ta.accountNumber,
+			Sequence:      ta.sequence,
+		}
+		// Generate the bytes to be signed.
+		signBytes, err := f.signModeHandler.GetSignBytes(signMode, signerData, txBuilder.GetTx())
+		if err != nil {
+			return err
+		}
+		// Sign those bytes
+		sigBytes, _, err := f.keyManager.Sign(ta.name, ta.password, signBytes)
+		if err != nil {
+			return err
+		}
+		sigs[i].Data.(*signing.SingleSignatureData).Signature = sigBytes
+	}
+
+	// And here the tx is populated with the signature
+	return txBuilder.SetSignatures(sigs...)
 }

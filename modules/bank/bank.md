@@ -9,6 +9,7 @@
   - [Send](#send) --Transfer
   - [MsgSend](#msgsend) --MsgSend
   - [MultiSendRequest](#multisendrequest) --MultiSendRequest
+  - [MultiToMultiSend](#multitomultisend) --MultiToMultiSend
 
 # realization
 
@@ -97,4 +98,27 @@ mmm := bank.MultiSendRequest{[]bank.Receipt{
 {Address: "gx1jfdv0jrmjr8pye40nwc7hd79k5j4xp2hrnfq34", Amount:  coinss},
 }}
 results, err := client.Bank.MultiSend(mmm, baseTx)
+```
+
+
+#### MultiToMultiSend<a name="multitomultisend"></a><br/>
+>Many to many transaction
+
+**You need to import the private key before you can operate，Please see the key package for importing the private key**
+```go
+    baseTx := types.BaseTx{
+		Gas:  200000,
+		Mode: types.Commit,
+		Memo: "test",
+	}
+    //The first account number of the fee deduction address
+	baseTx.Fee, err = types.ParseDecCoins("2000uplugcn")
+	
+    coins, err := types.ParseDecCoins("100uplugcn")
+    param := bank.MultiToMultiSendRequest{Receipts: []bank.MutilReceipt{
+        {From: "test1", Password: "123123123", To: "gx1m6jpgfptpwsxmq7w88z30tsxp22ncwe4fakmnh", Amount: coins},
+        {From: "test2", Password: "123123123", To: "gx1jsw9trgnpdc3e3dwhe69fk4hqct9n8yq8jyzv9", Amount: coins},
+        {From: "test3", Password: "123123123", To: "gx18y5dmarzq5wdc5y2h5ydkl9f8ar46gxz75null", Amount: coins},
+    }}
+    res, err := client.Bank.MultiToMultiSend(param, baseTx)
 ```
