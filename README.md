@@ -141,7 +141,7 @@ the `NewKeyDaoWithAES` method to initialize a `KeyDAO` instance, which will use 
 For more API usage documentation, please check:<br/>
 [BANK](modules/bank/bank.md)<br/>
 [KEYS](modules/keys/keys.md)<br/>
-[TOKEN](modules/token/token.md)<br/>
+[PRC10](modules/prc10/prc10.md)<br/>
 [NFT](modules/nft/nft.md)<br/>
 [BASE](modules/auth/base.md)<br/>
 [GOV](modules/gov/gov.md)<br/>

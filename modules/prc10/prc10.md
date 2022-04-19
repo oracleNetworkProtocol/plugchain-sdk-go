@@ -21,25 +21,25 @@
 #### QueryToken<a name="token"></a><br/>
 >Query a single token
 ```go
-token, err := client.Token.QueryToken("test1")
+token, err := client.Prc10.QueryToken("test1")
 ```
 
 #### QueryTokens<a name="tokens"></a><br/>
 >Query all tokens
 ```go
-token, err := client.Token.QueryTokens("")
+token, err := client.Prc10.QueryTokens("")
 ```
 
 #### QueryFees<a name="fees"></a><br/>
 >Inquiry fee
 ```go
-token, err := client.Token.QueryFees("test1")
+token, err := client.Prc10.QueryFees("test1")
 ```
 
 #### QueryParams<a name="params"></a><br/>
 >Query parameters
 ```go
-res, err := client.Token.QueryParams()
+res, err := client.Prc10.QueryParams()
 ```
 
 
@@ -66,7 +66,7 @@ issueTokenReq := token.IssueTokenRequest{
 	MaxSupply:     21000000,
 	Mintable:      true,
 }
-rs, err := client.Token.IssueToken(issueTokenReq, baseTx)
+rs, err := client.Prc10.IssueToken(issueTokenReq, baseTx)
 ```
 
 #### EditToken<a name="edit"></a><br/>
@@ -86,7 +86,7 @@ editTokenReq := token.EditTokenRequest{
     Name:      "testToken66",
     MaxSupply: 22000000,
 }
-rs, err := client.Token.EditToken(editTokenReq, baseTx)
+rs, err := client.Prc10.EditToken(editTokenReq, baseTx)
 ```
 
 #### TransferToken<a name="transfer"></a><br/>
@@ -101,7 +101,7 @@ baseTx := types.BaseTx{
     Memo:     "test",
 }
 baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
-rs, err := client.Token.TransferToken("gx1akqhezuftdcc0eqzkq5peqpjlucgmyr7srx54j", "test1", baseTx)
+rs, err := client.Prc10.TransferToken("gx1akqhezuftdcc0eqzkq5peqpjlucgmyr7srx54j", "test1", baseTx)
 ```
 
 #### MintToken<a name="mint"></a><br/>
@@ -116,6 +116,6 @@ baseTx := types.BaseTx{
     Memo:     "test",
 }
 baseTx.Fee, err = types.ParseDecCoins("2000uplugcn") //Fee
-rs, err = client.Token.MintToken("test1", 11000000, "gx1yhf7w0sq8yn6gqre2pulnqwyy30tjfc4v08f3x", baseTx)
+rs, err = client.Prc10.MintToken("test1", 11000000, "gx1yhf7w0sq8yn6gqre2pulnqwyy30tjfc4v08f3x", baseTx)
 ```
 
