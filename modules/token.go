@@ -3,12 +3,12 @@ package modules
 import (
 	"context"
 	"fmt"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/prc10"
 	"strings"
 
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
-	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/token"
 	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/utils/cache"
 )
@@ -33,9 +33,9 @@ func (l tokenQuery) QueryToken(denom string) (sdk.Token, error) {
 		return sdk.Token{}, sdk.Wrap(err)
 	}
 
-	response, err := token.NewQueryClient(conn).Token(
+	response, err := prc10.NewQueryClient(conn).Token(
 		context.Background(),
-		&token.QueryTokenRequest{Denom: denom},
+		&prc10.QueryTokenRequest{Denom: denom},
 	)
 	if err != nil {
 		l.Debug("client query token failed",
@@ -44,11 +44,11 @@ func (l tokenQuery) QueryToken(denom string) (sdk.Token, error) {
 		return sdk.Token{}, nil
 	}
 
-	var srcToken token.TokenInterface
+	var srcToken prc10.TokenInterface
 	if err = l.cdc.UnpackAny(response.Token, &srcToken); err != nil {
 		return sdk.Token{}, sdk.Wrap(err)
 	}
-	token := srcToken.(*token.Token).Convert().(sdk.Token)
+	token := srcToken.(*prc10.Token).Convert().(sdk.Token)
 	l.SaveTokens(token)
 	return token, nil
 }

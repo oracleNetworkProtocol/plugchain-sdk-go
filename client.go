@@ -11,8 +11,8 @@ import (
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/gov"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/keys"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/nft"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/prc10"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/staking"
-	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/token"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 	txtypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx"
 	"github.com/tendermint/tendermint/libs/log"
@@ -25,7 +25,7 @@ type PLUGCHAINClient struct {
 	types.BaseClient
 	Key     keys.Client
 	Bank    bank.Client
-	Token   token.Client
+	Prc10   prc10.Client
 	Swap    coinswap.Client
 	Nft     nft.Client
 	Gov     gov.Client
@@ -40,7 +40,7 @@ func NewPLUGCHAINClient(cfg types.ClientConfig) PLUGCHAINClient {
 	keysClient := keys.NewClient(baseClient)
 
 	bankClient := bank.NewClient(baseClient, encodingConfig.Marshaler)
-	tokenClient := token.NewClient(baseClient, encodingConfig.Marshaler)
+	tokenClient := prc10.NewClient(baseClient, encodingConfig.Marshaler)
 	swapClient := coinswap.NewClient(baseClient, encodingConfig.Marshaler, bankClient.TotalSupply)
 	nftClient := nft.NewClient(baseClient, encodingConfig.Marshaler)
 	govClient := gov.NewClient(baseClient, encodingConfig.Marshaler)
@@ -53,7 +53,7 @@ func NewPLUGCHAINClient(cfg types.ClientConfig) PLUGCHAINClient {
 		BaseClient:     baseClient,
 		Key:            keysClient,
 		Bank:           bankClient,
-		Token:          tokenClient,
+		Prc10:          tokenClient,
 		Swap:           swapClient,
 		Nft:            nftClient,
 		Gov:            govClient,

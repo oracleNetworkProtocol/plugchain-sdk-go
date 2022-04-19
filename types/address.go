@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/utils/bech32"
 )
 
@@ -115,6 +115,25 @@ func (aa *AccAddress) UnmarshalJSON(data []byte) error {
 // Returns the original byte
 func (aa AccAddress) Bytes() []byte {
 	return aa
+}
+
+//Verify Eth address
+func ValidateAddress(address string) Error {
+	if !common.IsHexAddress(address) {
+		return Wrapf("address '%s' is not a valid ethereum hex address", address)
+	}
+	return nil
+}
+
+func HexAddressFromAccAddress(add string) (string, Error) {
+	if err := ValidateAccAddress(add); err != nil {
+		return "", err
+	}
+	hexaddress, err := AccAddressFromBech32(add)
+	if err != nil {
+		return "", err
+	}
+	return common.BytesToAddress(hexaddress).String(), nil
 }
 
 type ValAddress []byte
