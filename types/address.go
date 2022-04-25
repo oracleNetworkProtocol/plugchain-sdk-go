@@ -34,6 +34,15 @@ func ValidateAccAddress(address string) Error {
 	return nil
 }
 
+func ValidateAccAddressAll(address ...string) Error {
+	for _, addr := range address {
+		if err := ValidateAccAddress(addr); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 //Get by address AccAddress
 func MustAccAddressFromBech32(address string) AccAddress {
 	addr, err := AccAddressFromBech32(address)
@@ -120,7 +129,7 @@ func (aa AccAddress) Bytes() []byte {
 //Verify Eth address
 func ValidateAddress(address string) Error {
 	if !common.IsHexAddress(address) {
-		return Wrapf("address '%s' is not a valid ethereum hex address", address)
+		return Wrapf("address '%s' is not a valid hex address", address)
 	}
 	return nil
 }
@@ -134,6 +143,17 @@ func HexAddressFromAccAddress(add string) (string, Error) {
 		return "", err
 	}
 	return common.BytesToAddress(hexaddress).String(), nil
+}
+
+func AddressFromAccAddress(add string) (common.Address, Error) {
+	if err := ValidateAccAddress(add); err != nil {
+		return common.Address{}, err
+	}
+	hexaddress, err := AccAddressFromBech32(add)
+	if err != nil {
+		return common.Address{}, err
+	}
+	return common.BytesToAddress(hexaddress), nil
 }
 
 type ValAddress []byte
