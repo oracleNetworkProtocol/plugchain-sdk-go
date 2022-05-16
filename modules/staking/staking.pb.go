@@ -569,7 +569,7 @@ func (m *DVVTriplets) GetTriplets() []DVVTriplet {
 type Delegation struct {
 	DelegatorAddress string                                      `protobuf:"bytes,1,opt,name=delegator_address,json=delegatorAddress,proto3" json:"delegator_address,omitempty" yaml:"delegator_address"`
 	ValidatorAddress string                                      `protobuf:"bytes,2,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty" yaml:"validator_address"`
-	Shares           plugchain_sdk_go_types.Dec `protobuf:"bytes,3,opt,name=shares,proto3,customtype=github.com/xiaka53/plugchain-sdk-go/types.Dec" json:"shares"`
+	Shares           plugchain_sdk_go_types.Dec `protobuf:"bytes,3,opt,name=shares,proto3,customtype=github.com/oracleNetworkProtocol/plugchain-sdk-go/types.Dec" json:"shares"`
 }
 
 func (m *Delegation) Reset()      { *m = Delegation{} }
@@ -648,8 +648,8 @@ var xxx_messageInfo_UnbondingDelegation proto.InternalMessageInfo
 type UnbondingDelegationEntry struct {
 	CreationHeight int64                                       `protobuf:"varint,1,opt,name=creation_height,json=creationHeight,proto3" json:"creation_height,omitempty" yaml:"creation_height"`
 	CompletionTime time.Time                                   `protobuf:"bytes,2,opt,name=completion_time,json=completionTime,proto3,stdtime" json:"completion_time" yaml:"completion_time"`
-	InitialBalance plugchain_sdk_go_types.Int `protobuf:"bytes,3,opt,name=initial_balance,json=initialBalance,proto3,customtype=github.com/xiaka53/plugchain-sdk-go/types.Int" json:"initial_balance" yaml:"initial_balance"`
-	Balance        plugchain_sdk_go_types.Int `protobuf:"bytes,4,opt,name=balance,proto3,customtype=github.com/xiaka53/plugchain-sdk-go/types.Int" json:"balance"`
+	InitialBalance plugchain_sdk_go_types.Int `protobuf:"bytes,3,opt,name=initial_balance,json=initialBalance,proto3,customtype=github.com/oracleNetworkProtocol/plugchain-sdk-go/types.Int" json:"initial_balance" yaml:"initial_balance"`
+	Balance        plugchain_sdk_go_types.Int `protobuf:"bytes,4,opt,name=balance,proto3,customtype=github.com/oracleNetworkProtocol/plugchain-sdk-go/types.Int" json:"balance"`
 }
 
 func (m *UnbondingDelegationEntry) Reset()      { *m = UnbondingDelegationEntry{} }
@@ -702,8 +702,8 @@ func (m *UnbondingDelegationEntry) GetCompletionTime() time.Time {
 type RedelegationEntry struct {
 	CreationHeight int64                                       `protobuf:"varint,1,opt,name=creation_height,json=creationHeight,proto3" json:"creation_height,omitempty" yaml:"creation_height"`
 	CompletionTime time.Time                                   `protobuf:"bytes,2,opt,name=completion_time,json=completionTime,proto3,stdtime" json:"completion_time" yaml:"completion_time"`
-	InitialBalance plugchain_sdk_go_types.Int `protobuf:"bytes,3,opt,name=initial_balance,json=initialBalance,proto3,customtype=github.com/xiaka53/plugchain-sdk-go/types.Int" json:"initial_balance" yaml:"initial_balance"`
-	SharesDst      plugchain_sdk_go_types.Dec `protobuf:"bytes,4,opt,name=shares_dst,json=sharesDst,proto3,customtype=github.com/xiaka53/plugchain-sdk-go/types.Dec" json:"shares_dst"`
+	InitialBalance plugchain_sdk_go_types.Int `protobuf:"bytes,3,opt,name=initial_balance,json=initialBalance,proto3,customtype=github.com/oracleNetworkProtocol/plugchain-sdk-go/types.Int" json:"initial_balance" yaml:"initial_balance"`
+	SharesDst      plugchain_sdk_go_types.Dec `protobuf:"bytes,4,opt,name=shares_dst,json=sharesDst,proto3,customtype=github.com/oracleNetworkProtocol/plugchain-sdk-go/types.Dec" json:"shares_dst"`
 }
 
 func (m *RedelegationEntry) Reset()      { *m = RedelegationEntry{} }
@@ -927,7 +927,7 @@ func (m *DelegationResponse) GetBalance() types2.Coin {
 // responses.
 type RedelegationEntryResponse struct {
 	RedelegationEntry RedelegationEntry                           `protobuf:"bytes,1,opt,name=redelegation_entry,json=redelegationEntry,proto3" json:"redelegation_entry"`
-	Balance           plugchain_sdk_go_types.Int `protobuf:"bytes,4,opt,name=balance,proto3,customtype=github.com/xiaka53/plugchain-sdk-go/types.Int" json:"balance"`
+	Balance           plugchain_sdk_go_types.Int `protobuf:"bytes,4,opt,name=balance,proto3,customtype=github.com/oracleNetworkProtocol/plugchain-sdk-go/types.Int" json:"balance"`
 }
 
 func (m *RedelegationEntryResponse) Reset()         { *m = RedelegationEntryResponse{} }
@@ -1028,8 +1028,8 @@ func (m *RedelegationResponse) GetEntries() []RedelegationEntryResponse {
 // Pool is used for tracking bonded and not-bonded token supply of the bond
 // denomination.
 type Pool struct {
-	NotBondedTokens plugchain_sdk_go_types.Int `protobuf:"bytes,1,opt,name=not_bonded_tokens,json=notBondedTokens,proto3,customtype=github.com/xiaka53/plugchain-sdk-go/types.Int" json:"not_bonded_tokens"`
-	BondedTokens    plugchain_sdk_go_types.Int `protobuf:"bytes,2,opt,name=bonded_tokens,json=bondedTokens,proto3,customtype=github.com/xiaka53/plugchain-sdk-go/types.Int" json:"bonded_tokens" yaml:"bonded_tokens"`
+	NotBondedTokens plugchain_sdk_go_types.Int `protobuf:"bytes,1,opt,name=not_bonded_tokens,json=notBondedTokens,proto3,customtype=github.com/oracleNetworkProtocol/plugchain-sdk-go/types.Int" json:"not_bonded_tokens"`
+	BondedTokens    plugchain_sdk_go_types.Int `protobuf:"bytes,2,opt,name=bonded_tokens,json=bondedTokens,proto3,customtype=github.com/oracleNetworkProtocol/plugchain-sdk-go/types.Int" json:"bonded_tokens" yaml:"bonded_tokens"`
 }
 
 func (m *Pool) Reset()         { *m = Pool{} }

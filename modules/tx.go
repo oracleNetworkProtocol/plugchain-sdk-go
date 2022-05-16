@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/hex"
 	"errors"
+	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/pvm"
 	"strings"
 	"time"
 
@@ -63,6 +65,91 @@ func (base baseClient) QueryTxs(builder *sdk.EventQueryBuilder, page, size *int)
 		Total: res.TotalCount,
 		Txs:   txs,
 	}, nil
+}
+
+func (base baseClient) QueryPvmTxs(builder *sdk.EventQueryBuilder, page, size *int) (sdk.PvmResultQueryTx, error) {
+	query := builder.Build()
+	if len(query) == 0 {
+		return sdk.PvmResultQueryTx{}, errors.New("must declare at least one tag to search")
+	}
+
+	res, err := base.TxSearch(context.Background(), query, false, page, size, "asc")
+	if err != nil {
+		return sdk.PvmResultQueryTx{}, err
+	}
+
+	resBlocks, err := base.getResultBlocks(res.Txs)
+	if err != nil {
+		return sdk.PvmResultQueryTx{}, err
+	}
+
+	resBlock := resBlocks[res.Txs[0].Height]
+
+	var txs []*pvm.MsgEthereumTx
+	for _, tx := range resBlock.Block.Txs {
+		tx, err := base.encodingConfig.TxConfig.TxDecoder()(tx)
+		if err != nil {
+			base.logger.Debug("failed to decode transaction in block", "height", resBlock.Block.Height, "error", err.Error())
+			continue
+		}
+
+		for _, msg := range tx.GetMsgs() {
+			ethMsg, ok := msg.(*pvm.MsgEthereumTx)
+			if !ok {
+				continue
+			}
+
+			//hash := ethMsg.AsTransaction().Hash()
+			//ethTx, err := e.GetTxByEthHash(hash)
+			//if err != nil || ethTx.Height != block.Block.Height {
+			//	e.logger.Debug("failed to query eth tx hash", "hash", hash.Hex())
+			//	continue
+			//}
+
+			txs = append(txs, ethMsg)
+		}
+	}
+
+	var txIndex uint64
+	for i := range txs {
+		if txs[i].Hash == res.Txs[0].Hash.String() {
+			txIndex = uint64(i)
+			break
+		}
+	}
+	msg := txs[txIndex]
+	tx := msg.AsTransaction()
+	var signer types.Signer
+	if tx.Protected() {
+		signer = types.LatestSignerForChainID(tx.ChainId())
+	} else {
+		signer = types.HomesteadSigner{}
+	}
+	from, _ := types.Sender(signer, tx)
+	v, r, s := tx.RawSignatureValues()
+
+	al := tx.AccessList()
+	result := sdk.PvmResultQueryTx{
+		BlockHash:        resBlock.BlockID.Hash.String(),
+		BlockNumber:      resBlock.Block.Height,
+		From:             sdk.AccAddressFromHexAddress(from.String()),
+		Gas:              tx.Gas(),
+		GasPrice:         tx.GasPrice(),
+		Hash:             tx.Hash(),
+		Input:            tx.Data(),
+		Nonce:            tx.Nonce(),
+		TransactionIndex: txIndex,
+		Value:            tx.Value(),
+		Type:             tx.Type(),
+		Accesses:         &al,
+		V:                v,
+		R:                r,
+		S:                s,
+	}
+	if tx.To() != nil {
+		result.To = sdk.AccAddressFromHexAddress(tx.To().String())
+	}
+	return result, nil
 }
 
 func (base baseClient) QueryBlock(height int64) (sdk.BlockDetail, error) {

@@ -12,6 +12,7 @@ import (
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/keys"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/nft"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/prc10"
+	_pvm "github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/pvm"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/staking"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 	txtypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx"
@@ -30,6 +31,7 @@ type PLUGCHAINClient struct {
 	Nft     nft.Client
 	Gov     gov.Client
 	Staking staking.Client
+	Pvm     _pvm.Client
 }
 
 func NewPLUGCHAINClient(cfg types.ClientConfig) PLUGCHAINClient {
@@ -45,6 +47,7 @@ func NewPLUGCHAINClient(cfg types.ClientConfig) PLUGCHAINClient {
 	nftClient := nft.NewClient(baseClient, encodingConfig.Marshaler)
 	govClient := gov.NewClient(baseClient, encodingConfig.Marshaler)
 	stakingClient := staking.NewClient(baseClient, encodingConfig.Marshaler)
+	pvm := _pvm.NewClient(baseClient, encodingConfig.Marshaler)
 
 	client := &PLUGCHAINClient{
 		logger:         baseClient.Logger(),
@@ -58,6 +61,7 @@ func NewPLUGCHAINClient(cfg types.ClientConfig) PLUGCHAINClient {
 		Nft:            nftClient,
 		Gov:            govClient,
 		Staking:        stakingClient,
+		Pvm:            pvm,
 	}
 
 	client.RegisterModule(
@@ -70,6 +74,7 @@ func NewPLUGCHAINClient(cfg types.ClientConfig) PLUGCHAINClient {
 		//oracleClient,
 		//htlcClient,
 		swapClient,
+		pvm,
 	)
 
 	return *client

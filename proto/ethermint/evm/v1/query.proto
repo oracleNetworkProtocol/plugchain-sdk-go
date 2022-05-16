@@ -4,11 +4,11 @@ package ethermint.evm.v1;
 import "gogoproto/gogo.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "google/api/annotations.proto";
-import "ethermint/evm/v1/evm.proto";
+import "ethermint/evm/v1/pvm.proto";
 import "ethermint/evm/v1/tx.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/evm";
+option go_package = "github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/pvm";
 
 // Query defines the gRPC querier service.
 service Query {

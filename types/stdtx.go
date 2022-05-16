@@ -4,6 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	ethtypes "github.com/ethereum/go-ethereum/core/types"
+	"math/big"
 
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
 )
@@ -233,4 +237,23 @@ type ResultQueryTx struct {
 type ResultSearchTxs struct {
 	Total int             `json:"total"` // Count of all txs
 	Txs   []ResultQueryTx `json:"txs"`   // List of txs in current page
+}
+
+type PvmResultQueryTx struct {
+	BlockHash        string               `json:"blockHash"`
+	BlockNumber      int64                `json:"blockNumber"`
+	From             AccAddress           `json:"from"`
+	Gas              uint64               `json:"gas"`
+	GasPrice         *big.Int             `json:"gasPrice"`
+	Hash             common.Hash          `json:"hash"`
+	Input            hexutil.Bytes        `json:"input"`
+	Nonce            uint64               `json:"nonce"`
+	To               AccAddress           `json:"to"`
+	TransactionIndex uint64               `json:"transactionIndex"`
+	Value            *big.Int             `json:"value"`
+	Type             uint8                `json:"type"`
+	Accesses         *ethtypes.AccessList `json:"accessList,omitempty"`
+	V                *big.Int             `json:"v"`
+	R                *big.Int             `json:"r"`
+	S                *big.Int             `json:"s"`
 }

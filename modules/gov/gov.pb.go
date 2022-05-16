@@ -408,12 +408,12 @@ var xxx_messageInfo_VotingParams proto.InternalMessageInfo
 type TallyParams struct {
 	//  Minimum percentage of total stake needed to vote for a result to be
 	//  considered valid.
-	Quorum plugchain_sdk_types.Dec `protobuf:"bytes,1,opt,name=quorum,proto3,customtype=github.com/xiaka53/plugchain-sdk-go/types.Dec" json:"quorum,omitempty"`
+	Quorum plugchain_sdk_types.Dec `protobuf:"bytes,1,opt,name=quorum,proto3,customtype=github.com/oracleNetworkProtocol/plugchain-sdk-go/types.Dec" json:"quorum,omitempty"`
 	//  Minimum proportion of Yes votes for proposal to pass. Default value: 0.5.
-	Threshold plugchain_sdk_types.Dec `protobuf:"bytes,2,opt,name=threshold,proto3,customtype=github.com/xiaka53/plugchain-sdk-go/types.Dec" json:"threshold,omitempty"`
+	Threshold plugchain_sdk_types.Dec `protobuf:"bytes,2,opt,name=threshold,proto3,customtype=github.com/oracleNetworkProtocol/plugchain-sdk-go/types.Dec" json:"threshold,omitempty"`
 	//  Minimum value of Veto votes to Total votes ratio for proposal to be
 	//  vetoed. Default value: 1/3.
-	VetoThreshold plugchain_sdk_types.Dec `protobuf:"bytes,3,opt,name=veto_threshold,json=vetoThreshold,proto3,customtype=github.com/xiaka53/plugchain-sdk-go/types.Dec" json:"veto_threshold,omitempty" yaml:"veto_threshold"`
+	VetoThreshold plugchain_sdk_types.Dec `protobuf:"bytes,3,opt,name=veto_threshold,json=vetoThreshold,proto3,customtype=github.com/oracleNetworkProtocol/plugchain-sdk-go/types.Dec" json:"veto_threshold,omitempty" yaml:"veto_threshold"`
 }
 
 func (m *TallyParams) Reset()      { *m = TallyParams{} }

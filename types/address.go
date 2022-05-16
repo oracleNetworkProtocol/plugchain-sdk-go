@@ -145,6 +145,14 @@ func HexAddressFromAccAddress(add string) (string, Error) {
 	return common.BytesToAddress(hexaddress).String(), nil
 }
 
+func AccAddressFromHexAddress(add string) AccAddress {
+	if err := ValidateAddress(add); err != nil {
+		return nil
+	}
+	addr := common.HexToAddress(add).Bytes()
+	return AccAddress(addr)
+}
+
 func AddressFromAccAddress(add string) (common.Address, Error) {
 	if err := ValidateAccAddress(add); err != nil {
 		return common.Address{}, err

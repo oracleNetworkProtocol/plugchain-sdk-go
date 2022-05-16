@@ -47,6 +47,7 @@ type AccountQuery interface {
 type TmQuery interface {
 	QueryTx(hash string) (ResultQueryTx, error)
 	QueryTxs(builder *EventQueryBuilder, page, size *int) (ResultSearchTxs, error)
+	QueryPvmTxs(builder *EventQueryBuilder, page, size *int) (PvmResultQueryTx, error)
 	QueryBlock(height int64) (BlockDetail, error)
 }
 
