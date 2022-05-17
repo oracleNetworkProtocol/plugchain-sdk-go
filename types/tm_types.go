@@ -19,8 +19,12 @@ type (
 	SignClient    = tmclient.SignClient
 	StatusClient  = tmclient.StatusClient
 	NetworkClient = tmclient.NetworkClient
-	Header        = tmtypes.Header
-	Pair          = kv.Pair
+	//EvidenceClient = tmclient.EvidenceClient
+	//MempoolClient  = tmclient.MempoolClient
+	//HistoryClient  = tmclient.HistoryClient
+	//EventsClient   = tmclient.EventsClient
+	Header = tmtypes.Header
+	Pair   = kv.Pair
 
 	TmPubKey = crypto.PubKey
 )

@@ -8,6 +8,25 @@ import (
 	"strings"
 )
 
+// Evm module events
+const (
+	EventTypeBlockBloom = "block_bloom"
+	EventTypeTxLog      = "tx_log"
+
+	AttributeKeyContractAddress = "contract"
+	AttributeKeyRecipient       = "recipient"
+	AttributeKeyTxHash          = "txHash"
+	AttributeKeyEthereumTxHash  = "ethereumTxHash"
+	AttributeKeyTxType          = "txType"
+	AttributeKeyTxLog           = "txLog"
+	// tx failed in eth vm execution
+	AttributeKeyEthereumTxFailed = "ethereumTxFailed"
+	AttributeKeyEthereumBloom    = "bloom"
+
+	MetricKeyTransitionDB = "transition_db"
+	MetricKeyStaticCall   = "static_call"
+)
+
 type WSClient interface {
 	SubscribeNewBlock(builder *EventQueryBuilder, handler EventNewBlockHandler) (Subscription, Error)
 	SubscribeTx(builder *EventQueryBuilder, handler EventTxHandler) (Subscription, Error)
@@ -22,6 +41,10 @@ type TmClient interface {
 	WSClient
 	StatusClient
 	NetworkClient
+	//EvidenceClient
+	//MempoolClient
+	//HistoryClient
+	//EventsClient
 }
 
 type EventKey string

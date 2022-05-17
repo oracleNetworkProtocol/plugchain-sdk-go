@@ -1,11 +1,15 @@
 package modules
 
 import (
+	"bytes"
 	"context"
 	"encoding/hex"
 	"errors"
-	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/common"
+	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/pvm"
+	tmtypes "github.com/tendermint/tendermint/types"
+	"math/big"
 	"strings"
 	"time"
 
@@ -16,6 +20,8 @@ import (
 	clienttx "github.com/oracleNetworkProtocol/plugchain-sdk-go/client/tx"
 	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 )
+
+var bAttributeKeyEthereumBloom = []byte(sdk.AttributeKeyEthereumBloom)
 
 // QueryTx returns the tx info
 func (base baseClient) QueryTx(hash string) (sdk.ResultQueryTx, error) {
@@ -119,37 +125,109 @@ func (base baseClient) QueryPvmTxs(builder *sdk.EventQueryBuilder, page, size *i
 	}
 	msg := txs[txIndex]
 	tx := msg.AsTransaction()
-	var signer types.Signer
-	if tx.Protected() {
-		signer = types.LatestSignerForChainID(tx.ChainId())
-	} else {
-		signer = types.HomesteadSigner{}
-	}
-	from, _ := types.Sender(signer, tx)
-	v, r, s := tx.RawSignatureValues()
+	result, err := sdk.NewPVMTransaction(tx, common.BytesToHash(resBlock.Block.Hash()), uint64(resBlock.Block.Height), txIndex)
+	return *result, nil
+}
 
-	al := tx.AccessList()
-	result := sdk.PvmResultQueryTx{
-		BlockHash:        resBlock.BlockID.Hash.String(),
-		BlockNumber:      resBlock.Block.Height,
-		From:             sdk.AccAddressFromHexAddress(from.String()),
-		Gas:              tx.Gas(),
-		GasPrice:         tx.GasPrice(),
-		Hash:             tx.Hash(),
-		Input:            tx.Data(),
-		Nonce:            tx.Nonce(),
-		TransactionIndex: txIndex,
-		Value:            tx.Value(),
-		Type:             tx.Type(),
-		Accesses:         &al,
-		V:                v,
-		R:                r,
-		S:                s,
+func (base baseClient) PvmBlockFromTendermint(block *tmtypes.Block,
+	fullTx bool) (map[string]interface{}, error) {
+	PVMTxs := []interface{}{}
+	ctx := sdk.ContextWithHeight(block.Height)
+	resBlockResult, err := base.TmClient.BlockResults(ctx, &block.Height)
+	if err != nil {
+		return nil, err
 	}
-	if tx.To() != nil {
-		result.To = sdk.AccAddressFromHexAddress(tx.To().String())
+
+	txResults := resBlockResult.TxsResults
+	for i, txBz := range block.Txs {
+		tx, err := base.encodingConfig.TxConfig.TxDecoder()(txBz)
+		if err != nil {
+			base.logger.Debug("failed to decode transaction in block", "height", block.Height, "error", err.Error())
+			continue
+		}
+		for _, msg := range tx.GetMsgs() {
+			ethMsg, ok := msg.(*pvm.MsgEthereumTx)
+			if !ok {
+				continue
+			}
+			tx := ethMsg.AsTransaction()
+			if txResults[i].Code != 0 {
+				base.logger.Debug("invalid tx result code", "hash", tx.Hash().Hex())
+				continue
+			}
+
+			if !fullTx {
+				hash := tx.Hash()
+				PVMTxs = append(PVMTxs, hash)
+				continue
+			}
+			pvmTx, err := sdk.NewPVMTransaction(tx, common.BytesToHash(block.Hash()), uint64(block.Height), uint64(i))
+			if err != nil {
+				base.logger.Debug("NewTransactionFromData for receipt failed", "hash", tx.Hash().Hex(), "error", err.Error())
+				continue
+			}
+			PVMTxs = append(PVMTxs, pvmTx)
+		}
 	}
-	return result, nil
+
+	bloom, err := base.BlockBloom(&block.Height)
+	if err != nil {
+		base.logger.Debug("failed to query BlockBloom", "height", block.Height, "error", err.Error())
+	}
+
+	req := &pvm.QueryValidatorAccountRequest{
+		ConsAddress: sdk.ConsAddress(block.Header.ProposerAddress).String(),
+	}
+
+	conn, err := base.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return nil, err
+	}
+	res, err := pvm.NewQueryClient(conn).ValidatorAccount(context.Background(), req)
+	if err != nil {
+		return nil, err
+	}
+
+	addr, err := sdk.AccAddressFromBech32(res.AccountAddress)
+	if err != nil {
+		return nil, err
+	}
+	validatorAddr := common.BytesToAddress(addr)
+
+	clientCtx := NewBaseClient(*base.cfg, base.encodingConfig, nil)
+	gasLimit, err := sdk.BlockMaxGasFromConsensusParams(ctx, clientCtx, block.Height)
+	if err != nil {
+		base.logger.Error("failed to query consensus params", "error", err.Error())
+	}
+
+	gasUsed := uint64(0)
+
+	for _, txsResult := range txResults {
+		gasUsed += uint64(txsResult.GetGasUsed())
+	}
+
+	formattenBlock := sdk.FormatBlock(block.Header, block.Size(), gasLimit, new(big.Int).SetUint64(gasUsed), PVMTxs, bloom, validatorAddr)
+	return formattenBlock, nil
+}
+
+func (base baseClient) BlockBloom(height *int64) (ethtypes.Bloom, error) {
+	result, err := base.BlockResults(context.Background(), height)
+	if err != nil {
+		return ethtypes.Bloom{}, err
+	}
+	for _, event := range result.EndBlockEvents {
+		if event.Type != sdk.EventTypeBlockBloom {
+			continue
+		}
+
+		for _, attr := range event.Attributes {
+			if bytes.Equal(attr.Key, bAttributeKeyEthereumBloom) {
+				return ethtypes.BytesToBloom(attr.Value), nil
+			}
+		}
+	}
+	return ethtypes.Bloom{}, errors.New("block bllom event is not fount")
 }
 
 func (base baseClient) QueryBlock(height int64) (sdk.BlockDetail, error) {

@@ -61,7 +61,6 @@ func NewBaseClient(cfg sdk.ClientConfig, encodingConfig sdk.EncodingConfig, logg
 		encodingConfig: encodingConfig,
 		l:              NewLocker(concurrency),
 	}
-
 	base.KeyManager = keyManager{
 		keyDAO: cfg.KeyDAO,
 		algo:   cfg.Algo,

@@ -10,8 +10,7 @@ const (
 	// prefixValidator is the prefix for validator keys
 	prefixValidator = "gxval"
 
-	// prefixConsensus is the prefix for consensus keys
-	prefixConsensus = "e"
+	prefixConsensus = "cons"
 
 	// prefixPublic is the prefix for public
 	prefixPublic = "conspub"
@@ -25,7 +24,7 @@ var (
 		bech32AddressPrefix: map[string]string{
 			"account_addr":   prefixChain + prefixAccount + prefixAddress,
 			"validator_addr": prefixChain + prefixAccount + prefixAddress,
-			"consensus_addr": prefixChain + prefixConsensus + prefixAddress,
+			"consensus_addr": prefixChain + prefixValidator + prefixConsensus,
 			"account_pub":    prefixChain + prefixAccount + prefixPublic,
 			"validator_pub":  prefixChain + prefixValidator + prefixPublic,
 			"consensus_pub":  prefixChain + prefixValidator + prefixPublic,

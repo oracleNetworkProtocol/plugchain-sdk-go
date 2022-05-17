@@ -1,6 +1,7 @@
 package types
 
 import (
+	tmtypes "github.com/tendermint/tendermint/types"
 	"google.golang.org/grpc"
 
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -48,6 +49,7 @@ type TmQuery interface {
 	QueryTx(hash string) (ResultQueryTx, error)
 	QueryTxs(builder *EventQueryBuilder, page, size *int) (ResultSearchTxs, error)
 	QueryPvmTxs(builder *EventQueryBuilder, page, size *int) (PvmResultQueryTx, error)
+	PvmBlockFromTendermint(block *tmtypes.Block, fullTx bool) (map[string]interface{}, error)
 	QueryBlock(height int64) (BlockDetail, error)
 }
 

@@ -13,6 +13,7 @@ type Client interface {
 	GetBalance(token, addr string) (*big.Int, error)
 	GetTokenInfo(token string, f ...string) (TokenInfoResponse, error)
 	GetTxByHash(hash string) (sdk.PvmResultQueryTx, error)
+	GetBlockByNumber(blockId int64, fullTx bool) (map[string]interface{}, error)
 }
 
 type TokenInfoResponse struct {

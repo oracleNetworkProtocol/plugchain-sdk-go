@@ -1,7 +1,11 @@
 package types
 
 import (
+	"context"
 	"encoding/base64"
+	"fmt"
+	grpctypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/types/grpc"
+	"google.golang.org/grpc/metadata"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto/encoding"
@@ -128,4 +132,12 @@ func ParseValidators(cdc *codec.LegacyAmino, vs []*tmtypes.Validator) []Validato
 		}
 	}
 	return validators
+}
+
+func ContextWithHeight(height int64) context.Context {
+	if height == 0 {
+		return context.Background()
+	}
+
+	return metadata.AppendToOutgoingContext(context.Background(), grpctypes.GRPCBlockHeightHeader, fmt.Sprintf("%d", height))
 }

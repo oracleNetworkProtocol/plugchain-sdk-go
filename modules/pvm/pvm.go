@@ -28,7 +28,7 @@ type pvmClient struct {
 	codec.Marshaler
 }
 
-func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) Client {
+func NewClient(bc sdk.BaseClient, encodingConfig sdk.EncodingConfig, cdc codec.Marshaler) Client {
 	return pvmClient{
 		BaseClient: bc,
 		Marshaler:  cdc,
@@ -110,6 +110,21 @@ func (p pvmClient) GetTxByHash(hash string) (sdk.PvmResultQueryTx, error) {
 		return s, err
 	}
 	return s, nil
+}
+
+func (p pvmClient) GetBlockByNumber(blockId int64, fullTx bool) (map[string]interface{}, error) {
+	resBlock, err := p.Block(context.Background(), &blockId)
+	if err != nil {
+		return nil, err
+	}
+	if resBlock == nil || resBlock.Block == nil {
+		return nil, err
+	}
+	res, err := p.BaseClient.PvmBlockFromTendermint(resBlock.Block, fullTx)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }
 
 //Assembly data
