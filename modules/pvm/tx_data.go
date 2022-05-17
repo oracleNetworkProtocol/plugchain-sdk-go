@@ -213,182 +213,356 @@ func cost(fee, value *big.Int) *big.Int {
 	return fee
 }
 
-func (m *AccessListTx) TxType() byte {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) TxType() byte {
+	return ethtypes.AccessListTxType
 }
 
-func (m *AccessListTx) Copy() TxData {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) Copy() TxData {
+	return &AccessListTx{
+		ChainID:  tx.ChainID,
+		Nonce:    tx.Nonce,
+		GasPrice: tx.GasPrice,
+		GasLimit: tx.GasLimit,
+		To:       tx.To,
+		Amount:   tx.Amount,
+		Data:     common.CopyBytes(tx.Data),
+		Accesses: tx.Accesses,
+		V:        common.CopyBytes(tx.V),
+		R:        common.CopyBytes(tx.R),
+		S:        common.CopyBytes(tx.S),
+	}
 }
 
-func (m *AccessListTx) GetChainID() *big.Int {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) GetChainID() *big.Int {
+	if tx.ChainID == nil {
+		return nil
+	}
+
+	return tx.ChainID.BigInt()
 }
 
-func (m *AccessListTx) GetAccessList() ethtypes.AccessList {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) GetAccessList() ethtypes.AccessList {
+	if tx.Accesses == nil {
+		return nil
+	}
+	return *tx.Accesses.ToEthAccessList()
 }
 
-func (m *AccessListTx) GetData() []byte {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) GetData() []byte {
+	return common.CopyBytes(tx.Data)
 }
 
-func (m *AccessListTx) GetNonce() uint64 {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) GetNonce() uint64 {
+	return tx.Nonce
 }
 
-func (m *AccessListTx) GetGas() uint64 {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) GetGas() uint64 {
+	return tx.GasLimit
 }
 
-func (m *AccessListTx) GetGasPrice() *big.Int {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) GetGasPrice() *big.Int {
+	if tx.GasPrice == nil {
+		return nil
+	}
+	return tx.GasPrice.BigInt()
 }
 
-func (m *AccessListTx) GetGasTipCap() *big.Int {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) GetGasTipCap() *big.Int {
+	return tx.GetGasPrice()
 }
 
-func (m *AccessListTx) GetGasFeeCap() *big.Int {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) GetGasFeeCap() *big.Int {
+	return tx.GetGasPrice()
 }
 
-func (m *AccessListTx) GetValue() *big.Int {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) GetValue() *big.Int {
+	if tx.Amount == nil {
+		return nil
+	}
+
+	return tx.Amount.BigInt()
 }
 
-func (m *AccessListTx) GetTo() *common.Address {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) GetTo() *common.Address {
+	if tx.To == "" {
+		return nil
+	}
+	to := common.HexToAddress(tx.To)
+	return &to
 }
 
-func (m *AccessListTx) GetRawSignatureValues() (v, r, s *big.Int) {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) GetRawSignatureValues() (v, r, s *big.Int) {
+	return rawSignatureValues(tx.V, tx.R, tx.S)
 }
 
-func (m *AccessListTx) SetSignatureValues(chainID, v, r, s *big.Int) {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) SetSignatureValues(chainID, v, r, s *big.Int) {
+	if v != nil {
+		tx.V = v.Bytes()
+	}
+	if r != nil {
+		tx.R = r.Bytes()
+	}
+	if s != nil {
+		tx.S = s.Bytes()
+	}
+	if chainID != nil {
+		chainIDInt := types.NewIntFromBigInt(chainID)
+		tx.ChainID = &chainIDInt
+	}
 }
 
-func (m *AccessListTx) AsEthereumData() ethtypes.TxData {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) AsEthereumData() ethtypes.TxData {
+	v, r, s := tx.GetRawSignatureValues()
+	return &ethtypes.AccessListTx{
+		ChainID:    tx.GetChainID(),
+		Nonce:      tx.GetNonce(),
+		GasPrice:   tx.GetGasPrice(),
+		Gas:        tx.GetGas(),
+		To:         tx.GetTo(),
+		Value:      tx.GetValue(),
+		Data:       tx.GetData(),
+		AccessList: tx.GetAccessList(),
+		V:          v,
+		R:          r,
+		S:          s,
+	}
 }
 
-func (m *AccessListTx) Validate() error {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) Validate() error {
+	gasPrice := tx.GetGasPrice()
+	if gasPrice == nil {
+		return sdkerrors.Wrap(errors.New("invalid gas price"), "cannot be nil")
+	}
+	if !IsValidInt256(gasPrice) {
+		return sdkerrors.Wrap(errors.New("invalid gas price"), "out of bound")
+	}
+
+	if gasPrice.Sign() == -1 {
+		return sdkerrors.Wrapf(errors.New("invalid gas price"), "gas price cannot be negative %s", gasPrice)
+	}
+
+	amount := tx.GetValue()
+	// Amount can be 0
+	if amount != nil && amount.Sign() == -1 {
+		return sdkerrors.Wrapf(errors.New("invalid transaction amount"), "amount cannot be negative %s", amount)
+	}
+	if !IsValidInt256(amount) {
+		return sdkerrors.Wrap(errors.New("invalid transaction amount"), "out of bound")
+	}
+
+	if !IsValidInt256(tx.Fee()) {
+		return sdkerrors.Wrap(errors.New("invalid gas fee"), "out of bound")
+	}
+
+	if tx.To != "" {
+		if err := types.ValidateAddress(tx.To); err != nil {
+			return sdkerrors.Wrap(err, "invalid to address")
+		}
+	}
+
+	if tx.GetChainID() == nil {
+		return sdkerrors.Wrap(
+			sdkerrors.ErrInvalidChainID,
+			"chain ID must be present on AccessList txs",
+		)
+	}
+
+	return nil
 }
 
-func (m *AccessListTx) Fee() *big.Int {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) Fee() *big.Int {
+	return fee(tx.GetGasPrice(), tx.GetGas())
 }
 
-func (m *AccessListTx) Cost() *big.Int {
-	//TODO implement me
-	panic("implement me")
+func (tx *AccessListTx) Cost() *big.Int {
+	return cost(tx.Fee(), tx.GetValue())
 }
 
-func (m *DynamicFeeTx) TxType() byte {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) TxType() byte {
+	return ethtypes.DynamicFeeTxType
 }
 
-func (m *DynamicFeeTx) Copy() TxData {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) Copy() TxData {
+	return &DynamicFeeTx{
+		ChainID:   tx.ChainID,
+		Nonce:     tx.Nonce,
+		GasTipCap: tx.GasTipCap,
+		GasFeeCap: tx.GasFeeCap,
+		GasLimit:  tx.GasLimit,
+		To:        tx.To,
+		Amount:    tx.Amount,
+		Data:      common.CopyBytes(tx.Data),
+		Accesses:  tx.Accesses,
+		V:         common.CopyBytes(tx.V),
+		R:         common.CopyBytes(tx.R),
+		S:         common.CopyBytes(tx.S),
+	}
 }
 
-func (m *DynamicFeeTx) GetChainID() *big.Int {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) GetChainID() *big.Int {
+	if tx.ChainID == nil {
+		return nil
+	}
+
+	return tx.ChainID.BigInt()
 }
 
-func (m *DynamicFeeTx) GetAccessList() ethtypes.AccessList {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) GetAccessList() ethtypes.AccessList {
+	if tx.Accesses == nil {
+		return nil
+	}
+	return *tx.Accesses.ToEthAccessList()
 }
 
-func (m *DynamicFeeTx) GetData() []byte {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) GetData() []byte {
+	return common.CopyBytes(tx.Data)
 }
 
-func (m *DynamicFeeTx) GetNonce() uint64 {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) GetNonce() uint64 {
+	return tx.Nonce
 }
 
-func (m *DynamicFeeTx) GetGas() uint64 {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) GetGas() uint64 {
+	return tx.GasLimit
 }
 
-func (m *DynamicFeeTx) GetGasPrice() *big.Int {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) GetGasPrice() *big.Int {
+	return tx.GetGasFeeCap()
 }
 
-func (m *DynamicFeeTx) GetGasTipCap() *big.Int {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) GetGasTipCap() *big.Int {
+	if tx.GasTipCap == nil {
+		return nil
+	}
+	return tx.GasTipCap.BigInt()
 }
 
-func (m *DynamicFeeTx) GetGasFeeCap() *big.Int {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) GetGasFeeCap() *big.Int {
+	if tx.GasFeeCap == nil {
+		return nil
+	}
+	return tx.GasFeeCap.BigInt()
 }
 
-func (m *DynamicFeeTx) GetValue() *big.Int {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) GetValue() *big.Int {
+	if tx.Amount == nil {
+		return nil
+	}
+
+	return tx.Amount.BigInt()
 }
 
-func (m *DynamicFeeTx) GetTo() *common.Address {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) GetTo() *common.Address {
+	if tx.To == "" {
+		return nil
+	}
+	to := common.HexToAddress(tx.To)
+	return &to
 }
 
-func (m *DynamicFeeTx) GetRawSignatureValues() (v, r, s *big.Int) {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) GetRawSignatureValues() (v, r, s *big.Int) {
+	return rawSignatureValues(tx.V, tx.R, tx.S)
 }
 
-func (m *DynamicFeeTx) SetSignatureValues(chainID, v, r, s *big.Int) {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) SetSignatureValues(chainID, v, r, s *big.Int) {
+	if v != nil {
+		tx.V = v.Bytes()
+	}
+	if r != nil {
+		tx.R = r.Bytes()
+	}
+	if s != nil {
+		tx.S = s.Bytes()
+	}
+	if chainID != nil {
+		chainIDInt := types.NewIntFromBigInt(chainID)
+		tx.ChainID = &chainIDInt
+	}
 }
 
-func (m *DynamicFeeTx) AsEthereumData() ethtypes.TxData {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) AsEthereumData() ethtypes.TxData {
+	v, r, s := tx.GetRawSignatureValues()
+	return &ethtypes.DynamicFeeTx{
+		ChainID:    tx.GetChainID(),
+		Nonce:      tx.GetNonce(),
+		GasTipCap:  tx.GetGasTipCap(),
+		GasFeeCap:  tx.GetGasFeeCap(),
+		Gas:        tx.GetGas(),
+		To:         tx.GetTo(),
+		Value:      tx.GetValue(),
+		Data:       tx.GetData(),
+		AccessList: tx.GetAccessList(),
+		V:          v,
+		R:          r,
+		S:          s,
+	}
 }
 
-func (m *DynamicFeeTx) Validate() error {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) Validate() error {
+	if tx.GasTipCap == nil {
+		return sdkerrors.Wrap(errors.New("invalid gas cap"), "gas tip cap cannot nil")
+	}
+
+	if tx.GasFeeCap == nil {
+		return sdkerrors.Wrap(errors.New("invalid gas cap"), "gas fee cap cannot nil")
+	}
+
+	if tx.GasTipCap.IsNegative() {
+		return sdkerrors.Wrapf(errors.New("invalid gas cap"), "gas tip cap cannot be negative %s", tx.GasTipCap)
+	}
+
+	if tx.GasFeeCap.IsNegative() {
+		return sdkerrors.Wrapf(errors.New("invalid gas cap"), "gas fee cap cannot be negative %s", tx.GasFeeCap)
+	}
+
+	if !IsValidInt256(tx.GetGasTipCap()) {
+		return sdkerrors.Wrap(errors.New("invalid gas cap"), "out of bound")
+	}
+
+	if !IsValidInt256(tx.GetGasFeeCap()) {
+		return sdkerrors.Wrap(errors.New("invalid gas cap"), "out of bound")
+	}
+
+	if tx.GasFeeCap.LT(*tx.GasTipCap) {
+		return sdkerrors.Wrapf(
+			errors.New("invalid gas cap"), "max priority fee per gas higher than max fee per gas (%s > %s)",
+			tx.GasTipCap, tx.GasFeeCap,
+		)
+	}
+
+	if !IsValidInt256(tx.Fee()) {
+		return sdkerrors.Wrap(errors.New("invalid gas fee"), "out of bound")
+	}
+
+	amount := tx.GetValue()
+	// Amount can be 0
+	if amount != nil && amount.Sign() == -1 {
+		return sdkerrors.Wrapf(errors.New("invalid transaction amount"), "amount cannot be negative %s", amount)
+	}
+	if !IsValidInt256(amount) {
+		return sdkerrors.Wrap(errors.New("invalid transaction amount"), "out of bound")
+	}
+
+	if tx.To != "" {
+		if err := types.ValidateAddress(tx.To); err != nil {
+			return sdkerrors.Wrap(err, "invalid to address")
+		}
+	}
+
+	if tx.GetChainID() == nil {
+		return sdkerrors.Wrap(
+			sdkerrors.ErrInvalidChainID,
+			"chain ID must be present on AccessList txs",
+		)
+	}
+
+	return nil
 }
 
-func (m *DynamicFeeTx) Fee() *big.Int {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) Fee() *big.Int {
+	return fee(tx.GetGasPrice(), tx.GasLimit)
 }
 
-func (m *DynamicFeeTx) Cost() *big.Int {
-	//TODO implement me
-	panic("implement me")
+func (tx *DynamicFeeTx) Cost() *big.Int {
+	return cost(tx.Fee(), tx.GetValue())
 }
