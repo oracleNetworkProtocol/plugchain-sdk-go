@@ -253,6 +253,7 @@ type PvmResultQueryTx struct {
 	Value            *big.Int             `json:"value"`
 	Type             uint8                `json:"type"`
 	Accesses         *ethtypes.AccessList `json:"accessList,omitempty"`
+	ContractAddress  *AccAddress          `json:"contractAddress"`
 	V                *big.Int             `json:"v"`
 	R                *big.Int             `json:"r"`
 	S                *big.Int             `json:"s"`

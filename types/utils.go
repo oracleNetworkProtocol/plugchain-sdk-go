@@ -8,6 +8,7 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/crypto"
 	tmtypes "github.com/tendermint/tendermint/types"
 	"math/big"
 	"time"
@@ -108,12 +109,17 @@ func NewPVMTransaction(tx *ethtypes.Transaction, blockHash common.Hash, blockNum
 		Value:            tx.Value(),
 		Type:             tx.Type(),
 		Accesses:         &al,
+		ContractAddress:  &AccAddress{},
 		V:                v,
 		R:                r,
 		S:                s,
 	}
 	if tx.To() != nil {
 		result.To = AccAddressFromHexAddress(tx.To().String())
+	}
+	if tx.To() == nil {
+		ContractAddress := AccAddressFromHexAddress(crypto.CreateAddress(from, tx.Nonce()).String())
+		result.ContractAddress = &ContractAddress
 	}
 	return result, nil
 }
