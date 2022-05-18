@@ -142,6 +142,7 @@ func (p pvmClient) GetTransactionTxAndLogs(hash string) (tx PvmTxAndLogs, err er
 	if logTx == nil {
 		return tx, nil
 	}
+	tx.Status = !strings.Contains(logTx.TxResult.GetLog(), sdk.AttributeKeyEthereumTxFailed)
 	tx.PvmLogs, err = TxLogsFromEvents(logTx.TxResult.Events)
 	return tx, nil
 }
