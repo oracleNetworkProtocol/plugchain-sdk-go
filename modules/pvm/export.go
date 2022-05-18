@@ -14,6 +14,8 @@ type Client interface {
 	GetTokenInfo(token string, f ...string) (TokenInfoResponse, error)
 	GetTxByHash(hash string) (sdk.PvmResultQueryTx, error)
 	GetBlockByNumber(blockId int64, fullTx bool) (map[string]interface{}, error)
+	GetTransactionLogs(hash string) ([]*PvmLog, error)
+	GetTransactionTxAndLogs(hash string) (PvmTxAndLogs, error)
 }
 
 type TokenInfoResponse struct {
@@ -33,4 +35,9 @@ type ArgsRequest struct {
 	Memo             string
 	FunctionSelector string
 	Args             []interface{}
+}
+
+type PvmTxAndLogs struct {
+	PvmResultQueryTx sdk.PvmResultQueryTx
+	PvmLogs          []*PvmLog
 }

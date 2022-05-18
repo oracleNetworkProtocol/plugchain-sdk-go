@@ -73,17 +73,16 @@ func (base baseClient) QueryTxs(builder *sdk.EventQueryBuilder, page, size *int)
 	}, nil
 }
 
-func (base baseClient) QueryPvmTxs(builder *sdk.EventQueryBuilder, page, size *int) (sdk.PvmResultQueryTx, error) {
+func (base baseClient) TxSearchHandle(builder *sdk.EventQueryBuilder, page, size *int) (*ctypes.ResultTxSearch, error) {
 	query := builder.Build()
 	if len(query) == 0 {
-		return sdk.PvmResultQueryTx{}, errors.New("must declare at least one tag to search")
+		return nil, errors.New("must declare at least one tag to search")
 	}
 
-	res, err := base.TxSearch(context.Background(), query, false, page, size, "asc")
-	if err != nil {
-		return sdk.PvmResultQueryTx{}, err
-	}
+	return base.TxSearch(context.Background(), query, false, page, size, "asc")
+}
 
+func (base baseClient) QueryPvmTxs(res *ctypes.ResultTxSearch) (sdk.PvmResultQueryTx, error) {
 	resBlocks, err := base.getResultBlocks(res.Txs)
 	if err != nil {
 		return sdk.PvmResultQueryTx{}, err

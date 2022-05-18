@@ -1,10 +1,13 @@
 package pvm
 
 import (
+	"bytes"
+	"encoding/json"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 const (
@@ -57,4 +60,54 @@ func (al AccessList) ToEthAccessList() *ethtypes.AccessList {
 	}
 
 	return &ethAccessList
+}
+
+func TxLogsFromEvents(events []abci.Event) ([]*PvmLog, error) {
+	logs := make([]*Log, 0)
+	for _, event := range events {
+		if event.Type != sdk.EventTypeTxLog {
+			continue
+		}
+
+		for _, attr := range event.Attributes {
+			if !bytes.Equal(attr.Key, []byte(sdk.AttributeKeyTxLog)) {
+				continue
+			}
+
+			var log Log
+			if err := json.Unmarshal(attr.Value, &log); err != nil {
+				return nil, err
+			}
+
+			logs = append(logs, &log)
+		}
+	}
+	return LogsToPvmLog(logs), nil
+}
+
+func LogsToPvmLog(logs []*Log) []*PvmLog {
+	var pvmLogs []*PvmLog // nolint: prealloc
+	for i := range logs {
+		pvmLogs = append(pvmLogs, logs[i].ToPvmLog())
+	}
+	return pvmLogs
+}
+
+func (log *Log) ToPvmLog() *PvmLog {
+	var topics []common.Hash // nolint: prealloc
+	for i := range log.Topics {
+		topics = append(topics, common.HexToHash(log.Topics[i]))
+	}
+
+	return &PvmLog{
+		Address:     sdk.AccAddressFromHexAddress(log.Address),
+		Topics:      topics,
+		Data:        log.Data,
+		BlockNumber: log.BlockNumber,
+		TxHash:      common.HexToHash(log.TxHash),
+		TxIndex:     uint(log.TxIndex),
+		Index:       uint(log.Index),
+		BlockHash:   common.HexToHash(log.BlockHash),
+		Removed:     log.Removed,
+	}
 }
