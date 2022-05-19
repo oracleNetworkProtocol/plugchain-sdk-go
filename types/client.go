@@ -42,7 +42,7 @@ type StoreQuery interface {
 }
 
 type AccountQuery interface {
-	QueryAccount(address string, clientCtx Context) (BaseAccount, Error)
+	QueryAccount(address string) (BaseAccount, Error)
 	QueryAddress(name, password string) (AccAddress, Error)
 }
 

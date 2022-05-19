@@ -33,8 +33,8 @@ func (b bankClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
 }
 
 // QueryAccount return account information specified address
-func (b bankClient) QueryAccount(address string, clientCtx sdk.Context) (sdk.BaseAccount, sdk.Error) {
-	account, err := b.BaseClient.QueryAccount(address, clientCtx)
+func (b bankClient) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) {
+	account, err := b.BaseClient.QueryAccount(address)
 	if err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}

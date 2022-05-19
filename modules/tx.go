@@ -183,23 +183,21 @@ func (base baseClient) PvmBlockFromTendermint(block *tmtypes.Block,
 	if err != nil {
 		return nil, err
 	}
+
 	res, err := pvm.NewQueryClient(conn).ValidatorAccount(context.Background(), req)
 	if err != nil {
 		return nil, err
 	}
-
 	addr, err := sdk.AccAddressFromBech32(res.AccountAddress)
 	if err != nil {
 		return nil, err
 	}
 	validatorAddr := common.BytesToAddress(addr)
 
-	clientCtx := NewBaseClient(*base.cfg, base.encodingConfig, nil)
-	gasLimit, err := sdk.BlockMaxGasFromConsensusParams(ctx, clientCtx, block.Height)
+	gasLimit, err := BlockMaxGasFromConsensusParams(ctx, base, block.Height)
 	if err != nil {
 		base.logger.Error("failed to query consensus params", "error", err.Error())
 	}
-
 	gasUsed := uint64(0)
 
 	for _, txsResult := range txResults {
@@ -429,4 +427,17 @@ func parseQueryResponse(bz []byte) (sdk.SimulationResponse, error) {
 		return sdk.SimulationResponse{}, err
 	}
 	return simRes, nil
+}
+
+func BlockMaxGasFromConsensusParams(goCtx context.Context, clientCtx baseClient, blockHeight int64) (int64, error) {
+	resConsParams, err := clientCtx.ConsensusParams(goCtx, &blockHeight)
+	if err != nil {
+		return int64(^uint32(0)), err
+	}
+	gasLimit := resConsParams.ConsensusParams.Block.MaxGas
+	if gasLimit == -1 {
+		gasLimit = int64(^uint32(0))
+	}
+
+	return gasLimit, nil
 }

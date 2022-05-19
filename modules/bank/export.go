@@ -14,7 +14,7 @@ type Client interface {
 	MultiToMultiSend(receipts MultiToMultiSendRequest, baseTx sdk.BaseTx) ([]sdk.ResultTx, sdk.Error)
 	SubscribeSendTx(from, to string, callback EventMsgSendCallback) sdk.Subscription
 
-	QueryAccount(address string, clientCtx sdk.Context) (sdk.BaseAccount, sdk.Error)
+	QueryAccount(address string) (sdk.BaseAccount, sdk.Error)
 	TotalSupply() (sdk.Coins, sdk.Error)
 }
 

@@ -42,7 +42,7 @@ func (a accountQuery) QueryAndRefreshAccount(address string, base *baseClient) (
 	return baseAcc, nil
 }
 
-func (a accountQuery) QueryAccount(address string, clientCtx sdk.Context) (sdk.BaseAccount, sdk.Error) {
+func (a accountQuery) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) {
 	conn, err := a.GenConn()
 	defer func() {
 		_ = conn.Close()
@@ -55,8 +55,7 @@ func (a accountQuery) QueryAccount(address string, clientCtx sdk.Context) (sdk.B
 		Address: address,
 	}
 
-	response, err := auth.NewQueryClient(clientCtx).Account(context.Background(), request)
-	//response, err := auth.NewQueryClient(conn).Account(context.Background(), request)
+	response, err := auth.NewQueryClient(conn).Account(context.Background(), request)
 	if err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
@@ -116,11 +115,7 @@ func (a accountQuery) removeCache(address string) bool {
 }
 
 func (a accountQuery) refresh(address string, base *baseClient) (sdk.BaseAccount, sdk.Error) {
-	clientCtx := sdk.Context{
-		Client:            NewBaseClient(*base.cfg, base.encodingConfig, nil),
-		InterfaceRegistry: base.encodingConfig.InterfaceRegistry,
-	}
-	account, err := a.QueryAccount(address, clientCtx)
+	account, err := a.QueryAccount(address)
 	if err != nil {
 		a.Error("update cache failed", "address", address, "errMsg", err.Error())
 		return sdk.BaseAccount{}, sdk.Wrap(err)

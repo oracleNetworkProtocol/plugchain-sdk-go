@@ -1,7 +1,6 @@
 package types
 
 import (
-	"context"
 	"encoding/binary"
 	"encoding/json"
 	"github.com/ethereum/go-ethereum/common"
@@ -122,19 +121,6 @@ func NewPVMTransaction(tx *ethtypes.Transaction, blockHash common.Hash, blockNum
 		result.ContractAddress = &ContractAddress
 	}
 	return result, nil
-}
-
-func BlockMaxGasFromConsensusParams(goCtx context.Context, clientCtx BaseClient, blockHeight int64) (int64, error) {
-	resConsParams, err := clientCtx.ConsensusParams(goCtx, &blockHeight)
-	if err != nil {
-		return int64(^uint32(0)), err
-	}
-	gasLimit := resConsParams.ConsensusParams.Block.MaxGas
-	if gasLimit == -1 {
-		gasLimit = int64(^uint32(0))
-	}
-
-	return gasLimit, nil
 }
 
 func FormatBlock(
