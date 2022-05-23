@@ -86,6 +86,9 @@ func (p pvmClient) GetTokenInfo(token string, f ...string) (tir TokenInfoRespons
 		res, err := NewQueryClient(conn).EthCall(context.Background(), &EthCallRequest{
 			Args: bz,
 		})
+		if err != nil || res.VmError != "" || res.Ret == nil {
+			continue
+		}
 		switch _func {
 		case NAME:
 			name := res.Ret[64 : 64+res.Ret[63]]
