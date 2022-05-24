@@ -41,4 +41,5 @@ type PvmTxAndLogs struct {
 	PvmResultQueryTx sdk.PvmResultQueryTx
 	PvmLogs          []*PvmLog
 	Status           bool
+	Failed           string
 }

@@ -146,9 +146,13 @@ func (p pvmClient) GetTransactionTxAndLogs(hash string) (tx PvmTxAndLogs, err er
 		return tx, nil
 	}
 	tx.Status = !strings.Contains(logTx.TxResult.GetLog(), sdk.AttributeKeyEthereumTxFailed)
+	if !tx.Status {
+		tx.Failed = getLogFailedInfo(logTx.TxResult.GetLog())
+	}
 	tx.PvmLogs, err = TxLogsFromEvents(logTx.TxResult.Events)
 	return tx, nil
 }
+
 func (p pvmClient) GetTransactionLogs(hash string) ([]*PvmLog, error) {
 	builder := sdk.NewEventQueryBuilder()
 	builder.AddCondition(sdk.NewCond(TypeMsgEthereumTx, AttributeKeyEthereumTxHash).EQ(hash))
@@ -259,4 +263,29 @@ func (p pvmClient) hexParamer(paramer []string, isArr bool, args []interface{}) 
 
 	}
 	return data, nil
+}
+
+func getLogFailedInfo(log string) (err string) {
+	var logTxLog []LogTxLog
+	_ = json.Unmarshal([]byte(log), &logTxLog)
+	for _, v := range logTxLog[0].Events {
+		if v.Type == TypeMsgEthereumTx {
+			for _, val := range v.Attributes {
+				if val.Key == sdk.AttributeKeyEthereumTxFailed {
+					err = val.Value
+				}
+			}
+		}
+	}
+	return err
+}
+
+type LogTxLog struct {
+	Events []struct {
+		Type       string `json:"type"`
+		Attributes []struct {
+			Key   string `json:"key"`
+			Value string `json:"value"`
+		} `json:"attributes"`
+	} `json:"events"`
 }
