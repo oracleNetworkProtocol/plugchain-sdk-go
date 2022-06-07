@@ -105,14 +105,24 @@ func (p pvmClient) GetTokenInfo(token string, f ...string) (tir TokenInfoRespons
 	return tir, nil
 }
 
-func (p pvmClient) GetTxByHash(hash string) (sdk.PvmResultQueryTx, error) {
+func (p pvmClient) GetTxByHash(hash string) (tx sdk.PvmResultQueryTx, err error) {
 	builder := sdk.NewEventQueryBuilder()
 	builder.AddCondition(sdk.NewCond(TypeMsgEthereumTx, AttributeKeyEthereumTxHash).EQ(hash))
 	res, err := p.TxSearchHandle(builder, nil, nil)
 	if err != nil {
-		return sdk.PvmResultQueryTx{}, err
+		return tx, err
 	}
-	return p.BaseClient.QueryPvmTxs(res)
+	txs, err := p.BaseClient.QueryPvmTxs(res)
+	if err != nil {
+		return tx, err
+	}
+	for _, v := range txs {
+		if v.Hash.String() == hash {
+			tx = v
+			break
+		}
+	}
+	return tx, nil
 }
 
 func (p pvmClient) GetBlockByNumber(blockId int64, fullTx bool) (map[string]interface{}, error) {
@@ -137,7 +147,16 @@ func (p pvmClient) GetTransactionTxAndLogs(hash string) (tx PvmTxAndLogs, err er
 	if err != nil {
 		return tx, err
 	}
-	tx.PvmResultQueryTx, err = p.BaseClient.QueryPvmTxs(res)
+	txs, err := p.BaseClient.QueryPvmTxs(res)
+	if err != nil {
+		return tx, err
+	}
+	for _, v := range txs {
+		if v.Hash.String() == hash {
+			tx.PvmResultQueryTx = v
+			break
+		}
+	}
 	if len(res.Txs) == 0 {
 		return tx, nil
 	}
@@ -253,7 +272,10 @@ func (p pvmClient) hexParamer(paramer []string, isArr bool, args []interface{}) 
 				_data := common.LeftPadBytes(hexAddr.Bytes(), 32)
 				data = append(data, _data...)
 			case "uint", "uint256", "uint8":
-
+				_arg := arg.(string)
+				hexAddr, _ := big.NewInt(1).SetString(_arg, 10)
+				_data := common.LeftPadBytes(hexAddr.Bytes(), 32)
+				data = append(data, _data...)
 			case "int", "int256", "int8":
 
 			case "bool":

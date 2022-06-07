@@ -82,12 +82,15 @@ func (base baseClient) TxSearchHandle(builder *sdk.EventQueryBuilder, page, size
 	return base.TxSearch(context.Background(), query, false, page, size, "asc")
 }
 
-func (base baseClient) QueryPvmTxs(res *ctypes.ResultTxSearch) (sdk.PvmResultQueryTx, error) {
+func (base baseClient) QueryPvmTxs(res *ctypes.ResultTxSearch) ([]sdk.PvmResultQueryTx, error) {
 	resBlocks, err := base.getResultBlocks(res.Txs)
 	if err != nil {
-		return sdk.PvmResultQueryTx{}, err
+		return []sdk.PvmResultQueryTx{}, err
 	}
 
+	if res.Txs == nil {
+		return []sdk.PvmResultQueryTx{}, errors.New("Nonexistent Txs")
+	}
 	resBlock := resBlocks[res.Txs[0].Height]
 
 	var txs []*pvm.MsgEthereumTx
@@ -104,28 +107,41 @@ func (base baseClient) QueryPvmTxs(res *ctypes.ResultTxSearch) (sdk.PvmResultQue
 				continue
 			}
 
-			//hash := ethMsg.AsTransaction().Hash()
-			//ethTx, err := e.GetTxByEthHash(hash)
-			//if err != nil || ethTx.Height != block.Block.Height {
-			//	e.logger.Debug("failed to query eth tx hash", "hash", hash.Hex())
-			//	continue
-			//}
+			hash := ethMsg.AsTransaction().Hash()
+			builder := sdk.NewEventQueryBuilder()
+
+			builder.AddCondition(sdk.NewCond(pvm.TypeMsgEthereumTx, pvm.AttributeKeyEthereumTxHash).EQ(hash))
+			plugTx, err := base.TxSearchHandle(builder, nil, nil)
+
+			if err != nil || plugTx.Txs[0].Height != resBlock.Block.Height {
+				continue
+			}
 
 			txs = append(txs, ethMsg)
 		}
 	}
 
-	var txIndex uint64
-	for i := range txs {
-		if txs[i].Hash == res.Txs[0].Hash.String() {
-			txIndex = uint64(i)
-			break
+	//var txIndex uint64
+	//
+	//for i := range txs {
+	//	if txs[i].Hash == res.Txs[0].Hash.String() {
+	//		txIndex = uint64(i)
+	//		break
+	//	}
+	//}
+	//msg := txs[txIndex]
+	//tx := msg.AsTransaction()
+	//result, err := sdk.NewPVMTransaction(tx, common.BytesToHash(resBlock.Block.Hash()), uint64(resBlock.Block.Height), txIndex)
+	var queryTxs []sdk.PvmResultQueryTx
+	for txIndex, msg := range txs {
+		tx := msg.AsTransaction()
+		result, err := sdk.NewPVMTransaction(tx, common.BytesToHash(resBlock.Block.Hash()), uint64(resBlock.Block.Height), uint64(txIndex))
+		if err != nil {
+			continue
 		}
+		queryTxs = append(queryTxs, *result)
 	}
-	msg := txs[txIndex]
-	tx := msg.AsTransaction()
-	result, err := sdk.NewPVMTransaction(tx, common.BytesToHash(resBlock.Block.Hash()), uint64(resBlock.Block.Height), txIndex)
-	return *result, nil
+	return queryTxs, nil
 }
 
 func (base baseClient) PvmBlockFromTendermint(block *tmtypes.Block,
