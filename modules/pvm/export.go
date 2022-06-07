@@ -11,6 +11,7 @@ type Client interface {
 	PackData(function_selector string, args ...interface{}) ([]byte, error)
 
 	GetBalance(token, addr string) (*big.Int, error)
+	GetCall(token, _func string, parameter ...interface{}) (string, error)
 	GetTokenInfo(token string, f ...string) (TokenInfoResponse, error)
 	GetTxByHash(hash string) (sdk.PvmResultQueryTx, error)
 	GetBlockByNumber(blockId int64, fullTx bool) (map[string]interface{}, error)

@@ -66,6 +66,29 @@ func (p pvmClient) GetBalance(token, addr string) (*big.Int, error) {
 	return common.BytesToHash(res.Ret).Big(), nil
 }
 
+func (p pvmClient) GetCall(token, _func string, parameter ...interface{}) (string, error) {
+	conn, err := p.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return "", sdk.Wrap(err)
+	}
+	if err := sdk.ValidateAccAddressAll(token); err != nil {
+		return "", sdk.Wrap(err)
+	}
+	bz, err := p.TransactionArgs(ArgsRequest{Token: token, FunctionSelector: _func, Args: parameter})
+	if err != nil {
+		return "", sdk.Wrap(err)
+	}
+
+	res, err := NewQueryClient(conn).EthCall(context.Background(), &EthCallRequest{
+		Args: bz,
+	})
+	if err != nil {
+		return "", sdk.Wrap(err)
+	}
+	return common.BytesToHash(res.Ret).String(), nil
+}
+
 //Query token basic information
 //GetTokenInfo(token,NAME,SYMBOL,DECIMALS,TOTALSUPPLY)
 func (p pvmClient) GetTokenInfo(token string, f ...string) (tir TokenInfoResponse, err error) {
