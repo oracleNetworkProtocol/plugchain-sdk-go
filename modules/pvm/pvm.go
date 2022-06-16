@@ -72,9 +72,9 @@ func (p pvmClient) GetCall(token, _func string, parameter ...interface{}) (strin
 	if err != nil {
 		return "", sdk.Wrap(err)
 	}
-	if err := sdk.ValidateAccAddressAll(token); err != nil {
-		return "", sdk.Wrap(err)
-	}
+	//if err := sdk.ValidateAccAddressAll(token); err != nil {
+	//	return "", sdk.Wrap(err)
+	//}
 	bz, err := p.TransactionArgs(ArgsRequest{Token: token, FunctionSelector: _func, Args: parameter})
 	if err != nil {
 		return "", sdk.Wrap(err)

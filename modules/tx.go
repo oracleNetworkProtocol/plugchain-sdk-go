@@ -113,7 +113,7 @@ func (base baseClient) QueryPvmTxs(res *ctypes.ResultTxSearch) ([]sdk.PvmResultQ
 			builder.AddCondition(sdk.NewCond(pvm.TypeMsgEthereumTx, pvm.AttributeKeyEthereumTxHash).EQ(hash))
 			plugTx, err := base.TxSearchHandle(builder, nil, nil)
 
-			if err != nil || plugTx.Txs[0].Height != resBlock.Block.Height {
+			if err != nil || (len(plugTx.Txs) < 1 && plugTx.Txs[0].Height != resBlock.Block.Height) {
 				continue
 			}
 
