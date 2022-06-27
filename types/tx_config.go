@@ -21,6 +21,7 @@ type (
 		SetFeeAmount(amount Coins)
 		SetGasLimit(limit uint64)
 		SetTimeoutHeight(height uint64)
+		SetFeeGranter(feeGranter AccAddress)
 	}
 
 	//Encoders and decoders containing transactions

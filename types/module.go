@@ -26,6 +26,7 @@ type KeyManager interface {
 	Recover(name, password, mnemonic, hdPath string) (string, error)
 	Import(name, password string, privKeyArmor string) (address string, err error)
 	Export(name, password string) (privKeyArmor string, err error)
+	ExportEthsecp256k1(name, password string) (privKeyArmor string, err error)
 	Delete(name, password string) error
 	Find(name, password string) (crypto.PubKey, AccAddress, error)
 }

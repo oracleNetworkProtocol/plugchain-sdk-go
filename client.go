@@ -47,7 +47,7 @@ func NewPLUGCHAINClient(cfg types.ClientConfig) PLUGCHAINClient {
 	nftClient := nft.NewClient(baseClient, encodingConfig.Marshaler)
 	govClient := gov.NewClient(baseClient, encodingConfig.Marshaler)
 	stakingClient := staking.NewClient(baseClient, encodingConfig.Marshaler)
-	pvm := _pvm.NewClient(baseClient, encodingConfig, encodingConfig.Marshaler)
+	pvm := _pvm.NewClient(baseClient, encodingConfig.Marshaler)
 
 	client := &PLUGCHAINClient{
 		logger:         baseClient.Logger(),

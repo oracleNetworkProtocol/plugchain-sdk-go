@@ -3,7 +3,10 @@ package tx
 import (
 	"errors"
 	"fmt"
+	codectypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/modules/pvm"
 	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	typesTx "github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types/tx/signing"
 )
 
@@ -186,6 +189,34 @@ func (f *Factory) WithTranAggrc(name, address, pass string, accountNumber, seque
 	return f
 }
 
+func (f *Factory) BuildPvmAndSign(name string, msgs sdk.Msg, json bool) ([]byte, error) {
+	tx, err := f.BuildPvmUnsignedTx(msgs)
+	if err != nil {
+		return nil, err
+	}
+
+	//ethereumTx
+
+	//if err = f.Sign(name, tx); err != nil {
+	//	return nil, err
+	//}
+
+	if json {
+		txBytes, err := f.txConfig.TxJSONEncoder()(tx.GetTx())
+		if err != nil {
+			return nil, err
+		}
+		return txBytes, nil
+	}
+
+	txBytes, err := f.txConfig.TxEncoder()(tx.GetTx())
+	if err != nil {
+		return nil, err
+	}
+
+	return txBytes, nil
+}
+
 func (f *Factory) BuildAndSign(name string, msgs []sdk.Msg, json bool) ([]byte, error) {
 	tx, err := f.BuildUnsignedTx(msgs)
 	if err != nil {
@@ -307,6 +338,52 @@ func (f *Factory) BuildUnsignedTxs(msgs []sdk.Msg) (sdk.TxBuilder, error) {
 	}
 
 	tx.SetMemo(f.memo)
+	tx.SetFeeAmount(fees)
+	tx.SetGasLimit(f.gas)
+	//f.txBuilder.SetTimeoutHeight(f.TimeoutHeight())
+
+	return tx, nil
+}
+
+func (f *Factory) BuildPvmUnsignedTx(msgs sdk.Msg) (sdk.TxBuilder, error) {
+	if f.chainID == "" {
+		return nil, fmt.Errorf("chain ID required but not specified")
+	}
+
+	fees := f.fees
+
+	if !f.gasPrices.IsZero() {
+		if !fees.IsZero() {
+			return nil, errors.New("cannot provide both fees and gas prices")
+		}
+
+		glDec := sdk.NewDec(int64(f.gas))
+
+		// Derive the fees based on the provided gas prices, where
+		// fee = ceil(gasPrice * gasLimit).
+		fees = make(sdk.Coins, len(f.gasPrices))
+
+		for i, gp := range f.gasPrices {
+			fee := gp.Amount.Mul(glDec)
+			fees[i] = sdk.NewCoin(gp.Denom, fee.Ceil().RoundInt())
+		}
+	}
+
+	builder := f.txConfig.NewTxBuilder()
+	tx, ok := builder.(typesTx.ExtensionOptionsTxBuilder)
+	if !ok {
+		return nil, errors.New("unsupported builder")
+	}
+
+	option, err := codectypes.NewAnyWithValue(&pvm.ExtensionOptionsEthereumTx{})
+	if err != nil {
+		return nil, err
+	}
+	tx.SetExtensionOptions(option)
+	if err := tx.SetMsgs(msgs); err != nil {
+		return nil, err
+	}
+
 	tx.SetFeeAmount(fees)
 	tx.SetGasLimit(f.gas)
 	//f.txBuilder.SetTimeoutHeight(f.TimeoutHeight())

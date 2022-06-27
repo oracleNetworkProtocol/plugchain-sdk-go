@@ -13,4 +13,5 @@ type Client interface {
 	Delete(name, password string) sdk.Error
 	Show(name, password string) (string, sdk.Error)
 	Ethsecp256k1TOSecp256k1(keystr, password string) string
+	ExportEthsecp256k1(name, password string) (string, error)
 }

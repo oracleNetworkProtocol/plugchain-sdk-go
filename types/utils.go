@@ -1,13 +1,16 @@
 package types
 
 import (
+	"bytes"
 	"encoding/binary"
 	"encoding/json"
+	"fmt"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
+	abci "github.com/tendermint/tendermint/abci/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 	"math/big"
 	"time"
@@ -158,4 +161,37 @@ func FormatBlock(
 		"transactions":    transactions,
 		"totalDifficulty": (*hexutil.Big)(big.NewInt(0)),
 	}
+}
+
+// SafeNewIntFromBigInt constructs Int from big.Int, return error if more than 256bits
+func SafeNewIntFromBigInt(i *big.Int) (Int, error) {
+	if !IsValidInt256(i) {
+		return NewInt(0), fmt.Errorf("big int out of bound: %s", i)
+	}
+	return NewIntFromBigInt(i), nil
+}
+
+// IsValidInt256 check the bound of 256 bit number
+func IsValidInt256(i *big.Int) bool {
+	return i == nil || i.BitLen() <= maxBitLen
+}
+
+//BaseFeeFromEvents parses the feemarket basefee from cosmos events
+func BaseFeeFromEvents(events []abci.Event) *big.Int {
+	for _, event := range events {
+		if event.Type != EventTypeFeeMarket {
+			continue
+		}
+
+		for _, attr := range event.Attributes {
+			if bytes.Equal(attr.Key, []byte(AttributeKeyBaseFee)) {
+				result, success := new(big.Int).SetString(string(attr.Value), 10)
+				if success {
+					return result
+				}
+				return nil
+			}
+		}
+	}
+	return nil
 }

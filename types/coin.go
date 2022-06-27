@@ -8,7 +8,9 @@ import (
 )
 
 const (
-	BaseDenom = "uplugcn"
+	BaseDenom       = "uplugcn"
+	UplugCn         = 6
+	DefaultGasPrice = 20
 )
 
 func NewCoin(denom string, amount Int) Coin {

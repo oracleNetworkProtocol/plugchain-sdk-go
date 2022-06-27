@@ -13,6 +13,7 @@ type TxManager interface {
 	TmQuery
 	BuildTxHash(msg []Msg, baseTx BaseTx) (string, Error)
 	BuildAndSend(msg []Msg, baseTx BaseTx) (ResultTx, Error)
+	BuildPvmAndSend(msg Msg, baseTx BaseTx) (ResultTx, Error)
 	BuildAndSign(msg []Msg, baseTx BaseTx) ([]byte, Error)
 	SendBatch(msgs Msgs, baseTx BaseTx) ([]ResultTx, Error)
 	BuildAndSendWithAccount(addr string, accountNumber, sequence uint64, msg []Msg, baseTx BaseTx) (ResultTx, Error)

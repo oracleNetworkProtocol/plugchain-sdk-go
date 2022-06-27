@@ -4,6 +4,8 @@ import (
 	"errors"
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
+	"github.com/gogo/protobuf/proto"
+	codectypes "github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 	sdkerrors "github.com/oracleNetworkProtocol/plugchain-sdk-go/types/errors"
 	"math/big"
@@ -565,4 +567,36 @@ func (tx *DynamicFeeTx) Fee() *big.Int {
 
 func (tx *DynamicFeeTx) Cost() *big.Int {
 	return cost(tx.Fee(), tx.GetValue())
+}
+
+func NewTxDataFromTx(tx *ethtypes.Transaction) (TxData, error) {
+	var txData TxData
+	var err error
+	switch tx.Type() {
+	case ethtypes.DynamicFeeTxType:
+		txData, err = newDynamicFeeTx(tx)
+	case ethtypes.AccessListTxType:
+		txData, err = newAccessListTx(tx)
+	default:
+		txData, err = newLegacyTx(tx)
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return txData, nil
+}
+
+func PackTxData(txData TxData) (*codectypes.Any, error) {
+	msg, ok := txData.(proto.Message)
+	if !ok {
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrPackAny, "cannot proto marshal %T", txData)
+	}
+
+	anyTxData, err := codectypes.NewAnyWithValue(msg)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrPackAny, err.Error())
+	}
+
+	return anyTxData, nil
 }

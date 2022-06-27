@@ -276,6 +276,21 @@ func (base baseClient) EstimateTxGas(txBytes []byte) (uint64, error) {
 	return adjusted, nil
 }
 
+func (base *baseClient) buildPvmTx(msgs sdk.Msg, baseTx sdk.BaseTx) ([]byte, *clienttx.Factory, sdk.Error) {
+	builder, err := base.prepare(baseTx)
+	if err != nil {
+		return nil, builder, sdk.Wrap(err)
+	}
+
+	txByte, err := builder.BuildPvmAndSign(baseTx.From, msgs, false)
+	if err != nil {
+		return nil, builder, sdk.Wrap(err)
+	}
+
+	base.Logger().Debug("sign transaction success")
+	return txByte, builder, nil
+}
+
 func (base *baseClient) buildTx(msgs []sdk.Msg, baseTx sdk.BaseTx) ([]byte, *clienttx.Factory, sdk.Error) {
 	builder, err := base.prepare(baseTx)
 	if err != nil {

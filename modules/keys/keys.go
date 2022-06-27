@@ -62,3 +62,11 @@ func (k keysClient) Ethsecp256k1TOSecp256k1(keystr, password string) string {
 	secp256k1Keystr := crypto2.EncryptArmorPrivKey(priKey, password, ethsecp256k1.Ethsecp256k1keyType)
 	return secp256k1Keystr
 }
+
+func (k keysClient) ExportEthsecp256k1(name, password string) (string, error) {
+	priv, err := k.KeyManager.ExportEthsecp256k1(name, password)
+	if err != nil {
+		return "", err
+	}
+	return priv, nil
+}

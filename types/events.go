@@ -137,6 +137,9 @@ var (
 	AttributeKeyAmount = "amount"
 
 	TxValue EventValue = "Tx"
+
+	EventTypeFeeMarket  = "fee_market"
+	AttributeKeyBaseFee = "base_fee"
 )
 
 type (

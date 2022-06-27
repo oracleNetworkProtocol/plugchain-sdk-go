@@ -3,12 +3,16 @@ package pvm
 import (
 	"context"
 	"encoding/json"
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
+	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/params"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec"
 	"github.com/oracleNetworkProtocol/plugchain-sdk-go/codec/types"
 	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
+	types2 "github.com/oracleNetworkProtocol/plugchain-sdk-go/types/feemarket/type"
 	"math/big"
 	"strings"
 )
@@ -28,7 +32,7 @@ type pvmClient struct {
 	codec.Marshaler
 }
 
-func NewClient(bc sdk.BaseClient, encodingConfig sdk.EncodingConfig, cdc codec.Marshaler) Client {
+func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) Client {
 	return pvmClient{
 		BaseClient: bc,
 		Marshaler:  cdc,
@@ -52,7 +56,11 @@ func (p pvmClient) GetBalance(token, addr string) (*big.Int, error) {
 	if err := sdk.ValidateAccAddressAll(token, addr); err != nil {
 		return big.NewInt(0), sdk.Wrap(err)
 	}
-	bz, err := p.TransactionArgs(ArgsRequest{From: addr, Token: token, FunctionSelector: "balanceOf(address)", Args: []interface{}{addr}})
+	hexAddr, err := sdk.AddressFromAccAddress(addr)
+	if err != nil {
+		return big.NewInt(0), sdk.Wrap(err)
+	}
+	bz, err := p.TransactionArgs(ArgsRequest{From: addr, Token: token, FunctionSelector: "balanceOf(address)", Args: []interface{}{hexAddr}})
 	if err != nil {
 		return big.NewInt(0), sdk.Wrap(err)
 	}
@@ -72,9 +80,6 @@ func (p pvmClient) GetCall(token, _func string, parameter ...interface{}) (strin
 	if err != nil {
 		return "", sdk.Wrap(err)
 	}
-	//if err := sdk.ValidateAccAddressAll(token); err != nil {
-	//	return "", sdk.Wrap(err)
-	//}
 	bz, err := p.TransactionArgs(ArgsRequest{Token: token, FunctionSelector: _func, Args: parameter})
 	if err != nil {
 		return "", sdk.Wrap(err)
@@ -87,6 +92,47 @@ func (p pvmClient) GetCall(token, _func string, parameter ...interface{}) (strin
 		return "", sdk.Wrap(err)
 	}
 	return common.BytesToHash(res.Ret).String(), nil
+}
+
+// GasPrice returns the current gas price based on Ethermint's gas price oracle.
+func (p pvmClient) GetGasPrice() (*big.Int, error) {
+	conn, err := p.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	block, err := p.BaseClient.Block(context.Background(), nil)
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+	tipcap := new(big.Int).SetInt64(sdk.DefaultGasPrice)
+	baseFee, _ := p.BaseFee(block.Block.Height)
+	if baseFee != nil {
+		tipcap.Add(tipcap, baseFee)
+	}
+	return tipcap, nil
+}
+
+// EstimateGas returns an estimate of gas usage for the given smart contract call.
+func (p pvmClient) EstimateGas(tran ArgsRequest) (uint64, error) {
+	conn, err := p.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return 0, sdk.Wrap(err)
+	}
+	bz, err := p.TransactionArgs(tran)
+	if err != nil {
+		return 0, sdk.Wrap(err)
+	}
+	res, err := NewQueryClient(conn).EstimateGas(context.Background(), &EthCallRequest{
+		Args:   bz,
+		GasCap: 25000000,
+	})
+	if err != nil {
+		return 0, sdk.Wrap(err)
+	}
+	return res.Gas, nil
 }
 
 //Query token basic information
@@ -212,6 +258,87 @@ func (p pvmClient) GetTransactionLogs(hash string) ([]*PvmLog, error) {
 	return TxLogsFromEvents(tx.TxResult.Events)
 }
 
+//----------------------------- Transfer -----------------------------
+
+func (p pvmClient) Sign(tran ArgsRequest, baseTx sdk.BaseTx) (*ethtypes.Transaction, error) {
+	hexAddr, addErr := sdk.AddressFromAccAddress(tran.Token)
+	if addErr != nil {
+		return nil, sdk.Wrap(addErr)
+	}
+	bz, err := p.PackData(tran.FunctionSelector, tran.Args...)
+	if err != nil {
+		return nil, sdk.Wrap(addErr)
+	}
+	if tran.Sequence == 0 {
+		account, err := p.QueryAccount(tran.From)
+		if err != nil {
+			return nil, err
+		}
+		tran.Sequence = account.Sequence
+	}
+	if tran.GasPrice == 0 {
+		gasPrice, _ := p.GetGasPrice()
+		tran.GasPrice = gasPrice.Int64()
+	}
+	if tran.Gas == 0 {
+		tran.Gas, _ = p.EstimateGas(tran)
+	}
+	tx := ethtypes.NewTx(&ethtypes.LegacyTx{
+		Nonce:    tran.Sequence,
+		To:       &hexAddr,
+		Value:    &tran.Num,
+		Gas:      tran.Gas,
+		GasPrice: new(big.Int).SetInt64(tran.GasPrice),
+		Data:     bz,
+	})
+	_privateKey, err := p.ExportEthsecp256k1(baseTx.From, baseTx.Password)
+	privateKeyByte, err := hexutil.Decode("0x" + _privateKey)
+	if err != nil {
+		return nil, err
+	}
+	privateKey, err := crypto.ToECDSA(privateKeyByte)
+	if err != nil {
+		return nil, err
+	}
+	tx, err = ethtypes.SignTx(tx, ethtypes.NewEIP155Signer(big.NewInt(520)), privateKey)
+	if err != nil {
+		return nil, err
+	}
+	return tx, nil
+}
+
+//return pvmHash
+func (p pvmClient) Send(tran ArgsRequest, baseTx sdk.BaseTx) (pvmHash string, cosmosHash string, err error) {
+	tx, err := p.Sign(tran, baseTx)
+	if err != nil {
+		return "", "", err
+	}
+	ethereumTx := &MsgEthereumTx{}
+	if err := ethereumTx.FromEthereumTx(tx); err != nil {
+		return "", "", err
+	}
+	if err := ethereumTx.ValidateBasic(); err != nil {
+		return "", "", err
+	}
+	txData, err := UnpackTxData(ethereumTx.Data)
+	if err != nil {
+		return "", "", err
+	}
+	feeamt := GetFeeAmt(txData)
+	fees := sdk.NewDecCoin(sdk.BaseDenom, sdk.NewIntFromBigInt(feeamt))
+	baseTx.Fee = sdk.DecCoins{fees}
+	baseTx.Gas = txData.GetGas()
+	baseTx.Mode = sdk.Sync
+
+	ctx, err := p.BuildPvmAndSend(ethereumTx, baseTx)
+	if err != nil {
+		return "", "", err
+	}
+	pvmHash = ethereumTx.AsTransaction().Hash().String()
+	cosmosHash = ctx.Hash
+	return pvmHash, cosmosHash, nil
+}
+
 //Assembly data
 func (p pvmClient) TransactionArgs(tran ArgsRequest) ([]byte, error) {
 	args := TransactionArgs{}
@@ -229,6 +356,13 @@ func (p pvmClient) TransactionArgs(tran ArgsRequest) ([]byte, error) {
 		}
 		args.To = &hexToken
 	}
+	if tran.GasPrice > 0 {
+		args.GasPrice = (*hexutil.Big)(new(big.Int).SetInt64(tran.GasPrice))
+	}
+	if tran.Gas > 0 {
+		gas := hexutil.Uint64(tran.Gas)
+		args.Gas = &gas
+	}
 	transferData, err := p.PackData(tran.FunctionSelector, tran.Args...)
 	if err != nil {
 		return nil, sdk.Wrap(err)
@@ -239,6 +373,44 @@ func (p pvmClient) TransactionArgs(tran ArgsRequest) ([]byte, error) {
 		return nil, sdk.Wrap(err)
 	}
 	return bz, nil
+}
+
+// BaseFee returns the base fee tracked by the Fee Market module. If the base fee is not enabled,
+// it returns the initial base fee amount. Return nil if London is not activated.
+func (p pvmClient) BaseFee(height int64) (*big.Int, error) {
+	conn, err := p.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+	_params, _ := NewQueryClient(conn).Params(context.Background(), &QueryParamsRequest{})
+	var _chainConfig params.ChainConfig
+	_chainConfig.LondonBlock = _params.Params.ChainConfig.LondonBlock.BigInt()
+	if !_chainConfig.IsLondon(new(big.Int).SetInt64(height)) {
+		return nil, nil
+	}
+	resParams, err := types2.NewQueryClient(conn).Params(context.Background(), &types2.QueryParamsRequest{})
+	if err != nil {
+		return nil, err
+	}
+	if resParams.Params.NoBaseFee {
+		return nil, nil
+	}
+	blockRes, err := p.BaseClient.BlockResults(context.Background(), &height)
+	if err != nil {
+		return nil, err
+	}
+	basseFee := sdk.BaseFeeFromEvents(blockRes.EndBlockEvents)
+	if basseFee != nil {
+		return basseFee, nil
+	}
+	// If we cannot find in events, we tried to get it from the state.
+	// It will return feemarket.baseFee if london is activated but feemarket is not enable
+	res, err := types2.NewQueryClient(conn).BaseFee(sdk.ContextWithHeight(height), &types2.QueryBaseFeeRequest{})
+	if err == nil && res.BaseFee != nil {
+		return res.BaseFee.BigInt(), nil
+	}
+	return nil, nil
 }
 
 //Splicing Data
@@ -255,7 +427,7 @@ func (p pvmClient) PackData(function_selector string, args ...interface{}) (data
 	if len(paramer) != len(args) {
 		return data, err
 	}
-	_hexParamer, err := p.hexParamer(paramer, false, args)
+	_hexParamer, err := p.hexParamer(paramer, args)
 	if err != nil {
 		return data, err
 	}
@@ -263,51 +435,18 @@ func (p pvmClient) PackData(function_selector string, args ...interface{}) (data
 	return data, err
 }
 
-func (p pvmClient) hexParamer(paramer []string, isArr bool, args []interface{}) (data []byte, err error) {
-	h := len(args)
-	for i := 0; i < h; i++ {
-		arg := args[i]
-		var v string
-		if isArr {
-			v = paramer[0]
-		} else {
-			v = paramer[i]
+func (p pvmClient) hexParamer(paramer []string, args []interface{}) (data []byte, err error) {
+	var arguments abi.Arguments
+	for _, v := range paramer {
+		_type, e := abi.NewType(v, "", nil)
+		if e != nil {
+			return data, e
 		}
-		if strings.Count(v, "[") != 0 {
-			_data, err := p.hexParamer([]string{v[2:]}, true, arg.([]interface{}))
-			if err != nil {
-				return data, err
-			}
-			data = append(data, _data...)
-		} else {
-			switch v {
-			case "string":
-
-			case "address":
-				_arg := arg.(string)
-				if err := sdk.ValidateAccAddress(_arg); err != nil {
-					return data, err
-				}
-				hexAddr, err := sdk.AddressFromAccAddress(_arg)
-				if err != nil {
-					return data, err
-				}
-				_data := common.LeftPadBytes(hexAddr.Bytes(), 32)
-				data = append(data, _data...)
-			case "uint", "uint256", "uint8":
-				_arg := arg.(string)
-				hexAddr, _ := big.NewInt(1).SetString(_arg, 10)
-				_data := common.LeftPadBytes(hexAddr.Bytes(), 32)
-				data = append(data, _data...)
-			case "int", "int256", "int8":
-
-			case "bool":
-
-			}
-		}
-
+		arguments = append(arguments, abi.Argument{
+			Type: _type,
+		})
 	}
-	return data, nil
+	return arguments.Pack(args...)
 }
 
 func getLogFailedInfo(log string) (err string) {

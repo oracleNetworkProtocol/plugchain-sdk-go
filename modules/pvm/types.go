@@ -3,11 +3,13 @@ package pvm
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	sdk "github.com/oracleNetworkProtocol/plugchain-sdk-go/types"
 	abci "github.com/tendermint/tendermint/abci/types"
+	"math/big"
 )
 
 const (
@@ -110,4 +112,19 @@ func (log *Log) ToPvmLog() *PvmLog {
 		BlockHash:   common.HexToHash(log.BlockHash),
 		Removed:     log.Removed,
 	}
+}
+
+// checkTxFee is an internal function used to check whether the fee of
+// the given transaction is _reasonable_(under the cap).
+func checkTxFee(gasPrice *big.Int, gas uint64, cap float64) error {
+	// Short circuit if there is no cap for transaction fee at all.
+	if cap == 0 {
+		return nil
+	}
+	feePlug := new(big.Float).Quo(new(big.Float).SetInt(new(big.Int).Mul(gasPrice, new(big.Int).SetUint64(gas))), new(big.Float).SetInt(big.NewInt(sdk.UplugCn)))
+	feeFloat, _ := feePlug.Float64()
+	if feeFloat > cap {
+		return fmt.Errorf("tx fee (%.2f uplugcn) exceeds the configured cap (%.2f uplugcn)", feeFloat, cap)
+	}
+	return nil
 }

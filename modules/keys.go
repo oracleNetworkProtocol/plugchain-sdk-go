@@ -1,7 +1,12 @@
 package modules
 
 import (
+	"errors"
 	"fmt"
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	crypto2 "github.com/ethereum/go-ethereum/crypto"
+	"github.com/oracleNetworkProtocol/plugchain-sdk-go/crypto/keys/ethsecp256k1"
+	"strings"
 
 	tmcrypto "github.com/tendermint/tendermint/crypto"
 
@@ -143,6 +148,31 @@ func (k keyManager) Export(name, password string) (armor string, err error) {
 	}
 
 	return km.ExportPrivKey(password)
+}
+
+func (k keyManager) ExportEthsecp256k1(name, password string) (armor string, err error) {
+	keystore, err := k.Export(name, password)
+	if err != nil {
+		return "", err
+	}
+	privKey, algo, err := crypto.UnarmorDecryptPrivKey(keystore, password)
+	if err != nil {
+		return "", err
+	}
+	if algo != ethsecp256k1.Ethsecp256k1keyType {
+		return "", errors.New(fmt.Sprintf("invalid key algorithm, got %s, expected %s", algo, ethsecp256k1.Ethsecp256k1keyType))
+	}
+	ethPrivKey, ok := privKey.(*ethsecp256k1.PrivKey)
+	if !ok {
+		return "", errors.New(fmt.Sprintf("invalid private key type %T, expected %T", privKey, &ethsecp256k1.PrivKey{}))
+	}
+	key, err := ethPrivKey.ToECDSA()
+	if err != nil {
+		return "", err
+	}
+	privB := crypto2.FromECDSA(key)
+	keyS := strings.ToUpper(hexutil.Encode(privB)[2:])
+	return keyS, nil
 }
 
 func (k keyManager) Delete(name, password string) error {

@@ -148,6 +148,28 @@ func (base *baseClient) BuildAndSend(msg []sdk.Msg, baseTx sdk.BaseTx) (sdk.Resu
 	return res, nil
 }
 
+func (base *baseClient) BuildPvmAndSend(msg sdk.Msg, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
+	txByte, ctx, err := base.buildPvmTx(msg, baseTx)
+	if err != nil {
+		return sdk.ResultTx{}, err
+	}
+
+	//if err := base.ValidateTxSize(len(txByte), msg); err != nil {
+	//	return sdk.ResultTx{}, err
+	//}
+
+	res, err := base.broadcastTx(txByte, ctx.Mode(), baseTx.Simulate)
+	if err != nil {
+		if base.cfg.Cached {
+			_ = base.removeCache(ctx.Address())
+		}
+
+		base.Logger().Error("broadcast transaction failed", "errMsg", err.Error())
+		return res, err
+	}
+	return res, nil
+}
+
 func (base *baseClient) BuildAndSendWithAccount(addr string, accountNumber, sequence uint64, msg []sdk.Msg, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
 	txByte, ctx, err := base.buildTxWithAccount(addr, accountNumber, sequence, msg, baseTx)
 	if err != nil {
