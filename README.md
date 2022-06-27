@@ -147,3 +147,4 @@ For more API usage documentation, please check:<br/>
 [GOV](modules/gov/gov.md)<br/>
 [STAKING](modules/staking/staking.md)<br/>
 [LIQUIDITY](modules/coinswap/coinswap.md)<br/>
+[PVM](modules/pvm/pvm.md)<br/>
