@@ -350,6 +350,14 @@ func (base *baseClient) prepareTemp(addr string, accountNumber, sequence uint64,
 	return factory, nil
 }
 
+func (base *baseClient) QueryChainID() string {
+	return base.cfg.ChainId
+}
+
+func (base *baseClient) QueryParams(module string, res sdk.Response) sdk.Error {
+	return nil
+}
+
 //You can lock resources based on conditions
 func NewLocker(size int) *locker {
 	shards := make([]chan int, size)

@@ -34,6 +34,7 @@ type GRPCClient interface {
 
 type ParamQuery interface {
 	QueryParams(module string, res Response) Error
+	QueryChainID() string
 }
 
 type StoreQuery interface {
@@ -73,6 +74,7 @@ type Logger interface {
 
 type BaseClient interface {
 	TxManager
+	ParamQuery
 	TokenManager
 	KeyManager
 	Queries

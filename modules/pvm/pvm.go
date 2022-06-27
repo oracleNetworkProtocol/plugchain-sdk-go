@@ -300,7 +300,11 @@ func (p pvmClient) Sign(tran ArgsRequest, baseTx sdk.BaseTx) (*ethtypes.Transact
 	if err != nil {
 		return nil, err
 	}
-	tx, err = ethtypes.SignTx(tx, ethtypes.NewEIP155Signer(big.NewInt(520)), privateKey)
+	chainID, err := sdk.ParseChainID(p.BaseClient.QueryChainID())
+	if err != nil {
+		return nil, err
+	}
+	tx, err = ethtypes.SignTx(tx, ethtypes.NewEIP155Signer(chainID), privateKey)
 	if err != nil {
 		return nil, err
 	}
