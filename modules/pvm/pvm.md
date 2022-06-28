@@ -1,6 +1,6 @@
 # PLUGCHAIN SDK GO
 
-## NFT MODULE
+## PVM MODULE
 
 - [Query](#query)
     - [TransactionArgs](#TransactionArgs) --TransactionArgs
