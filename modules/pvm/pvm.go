@@ -271,6 +271,7 @@ func (p pvmClient) Sign(tran ArgsRequest, baseTx sdk.BaseTx) (*ethtypes.Transact
 	}
 	if tran.Sequence == 0 {
 		from, _ := p.QueryAddress(baseTx.From, baseTx.Password)
+		tran.From = from.String()
 		account, err := p.QueryAccount(from.String())
 		if err != nil {
 			return nil, err
