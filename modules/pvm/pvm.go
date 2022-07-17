@@ -3,6 +3,7 @@ package pvm
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -74,24 +75,27 @@ func (p pvmClient) GetBalance(token, addr string) (*big.Int, error) {
 	return common.BytesToHash(res.Ret).Big(), nil
 }
 
-func (p pvmClient) GetCall(token, _func string, parameter ...interface{}) (string, error) {
+func (p pvmClient) GetCall(token, _func string, parameter ...interface{}) ([]byte, error) {
 	conn, err := p.GenConn()
 	defer func() { _ = conn.Close() }()
 	if err != nil {
-		return "", sdk.Wrap(err)
+		return nil, sdk.Wrap(err)
 	}
 	bz, err := p.TransactionArgs(ArgsRequest{Token: token, FunctionSelector: _func, Args: parameter})
 	if err != nil {
-		return "", sdk.Wrap(err)
+		return nil, sdk.Wrap(err)
 	}
 
 	res, err := NewQueryClient(conn).EthCall(context.Background(), &EthCallRequest{
 		Args: bz,
 	})
 	if err != nil {
-		return "", sdk.Wrap(err)
+		return nil, sdk.Wrap(err)
 	}
-	return common.BytesToHash(res.Ret).String(), nil
+	if res.VmError != "" {
+		return nil, sdk.Wrap(errors.New(res.VmError))
+	}
+	return res.Ret, nil
 }
 
 // GasPrice returns the current gas price based on Ethermint's gas price oracle.

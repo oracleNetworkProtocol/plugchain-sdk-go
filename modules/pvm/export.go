@@ -14,7 +14,7 @@ type Client interface {
 	GetGasPrice() (*big.Int, error)
 	EstimateGas(tran ArgsRequest) (uint64, error)
 	GetBalance(token, addr string) (*big.Int, error)
-	GetCall(token, _func string, parameter ...interface{}) (string, error)
+	GetCall(token, _func string, parameter ...interface{}) ([]byte, error)
 	GetTokenInfo(token string, f ...string) (TokenInfoResponse, error)
 	GetTxByHash(hash string) (sdk.PvmResultQueryTx, error)
 	GetBlockByNumber(blockId int64, fullTx bool) (map[string]interface{}, error)
