@@ -96,12 +96,5 @@ func GetFeeAmt(txData TxData) *big.Int {
 	effectiveTip := txData.GetGasPrice()
 	gasUsed := new(big.Int).SetUint64(txData.GetGas())
 	feeInit := new(big.Int).Mul(gasUsed, effectiveTip)
-	divisor := big.NewInt(1000)
-	feeAmt := new(big.Int).Div(feeInit, divisor)
-
-	feeAmtJudge := new(big.Int).Mul(feeAmt, divisor)
-	if feeAmtJudge.Cmp(feeInit) != 0 {
-		feeAmt = feeAmt.Add(feeAmt, big.NewInt(1))
-	}
-	return feeAmt
+	return feeInit
 }
