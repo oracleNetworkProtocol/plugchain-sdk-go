@@ -265,14 +265,11 @@ func (p pvmClient) GetTransactionLogs(hash string) ([]*PvmLog, error) {
 //----------------------------- Transfer -----------------------------
 
 func (p pvmClient) Sign(tran ArgsRequest, baseTx sdk.BaseTx) (*ethtypes.Transaction, error) {
-	hexAddr, addErr := sdk.AddressFromAccAddress(tran.Token)
-	if addErr != nil {
-		return nil, sdk.Wrap(addErr)
-	}
 	bz, err := p.PackData(tran.FunctionSelector, tran.Args...)
 	if err != nil {
-		return nil, sdk.Wrap(addErr)
+		return nil, sdk.Wrap(err)
 	}
+
 	if tran.Sequence == 0 {
 		from, _ := p.QueryAddress(baseTx.From, baseTx.Password)
 		tran.From = from.String()
@@ -289,14 +286,21 @@ func (p pvmClient) Sign(tran ArgsRequest, baseTx sdk.BaseTx) (*ethtypes.Transact
 	if tran.Gas == 0 {
 		tran.Gas, _ = p.EstimateGas(tran)
 	}
-	tx := ethtypes.NewTx(&ethtypes.LegacyTx{
+	legacyTx := &ethtypes.LegacyTx{
 		Nonce:    tran.Sequence,
-		To:       &hexAddr,
 		Value:    &tran.Num,
 		Gas:      tran.Gas,
 		GasPrice: new(big.Int).SetInt64(tran.GasPrice),
 		Data:     bz,
-	})
+	}
+	if tran.Token != "" {
+		hexAddr, addErr := sdk.AddressFromAccAddress(tran.Token)
+		if addErr != nil {
+			return nil, sdk.Wrap(addErr)
+		}
+		legacyTx.To = &hexAddr
+	}
+	tx := ethtypes.NewTx(legacyTx)
 	_privateKey, err := p.ExportEthsecp256k1(baseTx.From, baseTx.Password)
 	privateKeyByte, err := hexutil.Decode("0x" + _privateKey)
 	if err != nil {
@@ -425,6 +429,9 @@ func (p pvmClient) BaseFee(height int64) (*big.Int, error) {
 
 //Splicing Data
 func (p pvmClient) PackData(function_selector string, args ...interface{}) (data []byte, err error) {
+	if function_selector == "" && args != nil {
+		return args[0].([]byte), nil
+	}
 	function_selector = strings.Replace(function_selector, " ", "", -1)
 	index := strings.Index(function_selector, "(")
 	if index < 1 {
