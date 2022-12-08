@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -437,22 +438,32 @@ func (p pvmClient) PackData(function_selector string, args ...interface{}) (data
 	if index < 1 {
 		return data, err
 	}
-	data = append(data, crypto.Keccak256([]byte(function_selector))[:4]...)
 	index += 1
+	var _hexParamer []byte
 	paramerStr := function_selector[index : len(function_selector)-1]
-	paramer := strings.Split(paramerStr, ",")
-	if len(paramer) != len(args) {
-		return data, err
+	if strings.Index(paramerStr, "tuple") >= 0 {
+		new_function_selector := ""
+		_hexParamer, new_function_selector, err = p.hexParamerTuple(paramerStr, args)
+		if err != nil {
+			return data, err
+		}
+		function_selector = fmt.Sprintf("%v(%v)", function_selector[:index-1], new_function_selector)
+	} else {
+		_hexParamer, err = p.hexParamer(paramerStr, args)
+		if err != nil {
+			return data, err
+		}
 	}
-	_hexParamer, err := p.hexParamer(paramer, args)
-	if err != nil {
-		return data, err
-	}
+	data = append(data, crypto.Keccak256([]byte(function_selector))[:4]...)
 	data = append(data, _hexParamer...)
 	return data, err
 }
 
-func (p pvmClient) hexParamer(paramer []string, args []interface{}) (data []byte, err error) {
+func (p pvmClient) hexParamer(paramerStr string, args []interface{}) (data []byte, err error) {
+	paramer := strings.Split(paramerStr, ",")
+	if len(paramer) != len(args) {
+		return data, err
+	}
 	var arguments abi.Arguments
 	for _, v := range paramer {
 		_type, e := abi.NewType(v, "", nil)
@@ -464,6 +475,92 @@ func (p pvmClient) hexParamer(paramer []string, args []interface{}) (data []byte
 		})
 	}
 	return arguments.Pack(args...)
+}
+
+func (p pvmClient) hexParamerTuple(paramerStr string, args []interface{}) (data []byte, function_selector string, err error) {
+	paramer := strings.Split(paramerStr, ";")
+	var arguments abi.Arguments
+	for _, v := range paramer {
+		var argumentMarshaling []abi.ArgumentMarshaling
+		if len(v) > 5 && v[:5] == "tuple" {
+			argumentMarshaling, function_selector = cc(v)
+			v = "tuple"
+		}
+		function_selector = fmt.Sprintf("%v,", function_selector)
+		_type, e := abi.NewType(v, "", argumentMarshaling)
+		if e != nil {
+			return data, function_selector, e
+		}
+		arguments = append(arguments, abi.Argument{
+			Type: _type,
+		})
+	}
+	data, err = arguments.Pack(args...)
+	function_selector = function_selector[:len(function_selector)-1]
+	return data, function_selector, err
+}
+
+func cc(paramerStr string) ([]abi.ArgumentMarshaling, string) {
+	var argumentMarshaling []abi.ArgumentMarshaling
+	paramerStr = paramerStr[6 : len(paramerStr)-1]
+	name := "("
+PARAM:
+	for {
+		if paramerStr == "" {
+			break PARAM
+		}
+		oneParamerStart := strings.Index(paramerStr, ",")
+		if oneParamerStart < 0 {
+			oneParamerStart = len(paramerStr)
+			paramerStr = paramerStr + ","
+		}
+		paramer := paramerStr[:oneParamerStart]
+		openParamerStart := strings.Index(paramer, "tuple(")
+		if openParamerStart >= 0 {
+			onParamerEnd := strings.LastIndex(paramerStr, ")")
+			onParamerEnd = onParamerEnd + strings.Index(paramerStr[onParamerEnd:], ",")
+			paramerStrSunType := strings.LastIndex(paramerStr[:onParamerEnd], ":")
+			paramerStrSun := paramerStr[:paramerStrSunType]
+			isArray := false
+			if paramerStrSun[len(paramerStrSun)-2:] == "[]" {
+				paramerStrSun = paramerStrSun[:len(paramerStrSun)-2]
+				isArray = true
+			}
+			argumentMarshalingSun, sunName := cc(paramerStrSun)
+			if isArray {
+				sunName = fmt.Sprintf("%v[]", sunName)
+			}
+			name = fmt.Sprintf("%v%v,", name, sunName)
+			argumentMarshaling = append(argumentMarshaling, abi.ArgumentMarshaling{
+				Name: paramerStr[paramerStrSunType+1 : onParamerEnd], //paramerStrSun[paramerDataLen+1:],
+				Type: "tuple[]",
+				//InternalType: "struct main.AdditionalRecipient.F",
+				Components: argumentMarshalingSun,
+			})
+			paramerStr = paramerStr[onParamerEnd+1:]
+			continue PARAM
+		}
+		paramerStr = paramerStr[oneParamerStart+1:]
+		openParamerEnd := strings.Index(paramer, ")")
+		if openParamerEnd >= 0 {
+			if openParamerEnd == len(paramer)-1 {
+				paramerStr = ""
+			}
+			paramer = paramer[:openParamerEnd]
+		}
+		paramerData := strings.Split(paramer, ":")
+		if len(paramerData) != 2 {
+			return nil, ""
+		}
+		name = fmt.Sprintf("%v%v,", name, paramerData[0])
+		argumentMarshaling = append(argumentMarshaling, abi.ArgumentMarshaling{
+			Name: paramerData[1],
+			//InternalType: "struct main.OrderComponents.F",
+			Type: paramerData[0],
+		})
+	}
+	name = fmt.Sprintf("%v)", name[:len(name)-1])
+	return argumentMarshaling, name
 }
 
 func getLogFailedInfo(log string) (err string) {
