@@ -483,8 +483,15 @@ func (p pvmClient) hexParamerTuple(paramerStr string, args []interface{}) (data 
 	for _, v := range paramer {
 		var argumentMarshaling []abi.ArgumentMarshaling
 		if len(v) > 5 && v[:5] == "tuple" {
-			argumentMarshaling, function_selector = cc(v)
-			v = "tuple"
+			if v[len(v)-2:] == "[]" {
+				v = v[:len(v)-2]
+				argumentMarshaling, function_selector = cc(v)
+				function_selector = fmt.Sprintf("%v[]", function_selector)
+				v = "tuple[]"
+			} else {
+				argumentMarshaling, function_selector = cc(v)
+				v = "tuple"
+			}
 		}
 		function_selector = fmt.Sprintf("%v,", function_selector)
 		_type, e := abi.NewType(v, "", argumentMarshaling)
@@ -522,6 +529,7 @@ PARAM:
 			paramerStrSunType := strings.LastIndex(paramerStr[:onParamerEnd], ":")
 			paramerStrSun := paramerStr[:paramerStrSunType]
 			isArray := false
+			_types := "tuple"
 			if paramerStrSun[len(paramerStrSun)-2:] == "[]" {
 				paramerStrSun = paramerStrSun[:len(paramerStrSun)-2]
 				isArray = true
@@ -529,11 +537,12 @@ PARAM:
 			argumentMarshalingSun, sunName := cc(paramerStrSun)
 			if isArray {
 				sunName = fmt.Sprintf("%v[]", sunName)
+				_types = "tuple[]"
 			}
 			name = fmt.Sprintf("%v%v,", name, sunName)
 			argumentMarshaling = append(argumentMarshaling, abi.ArgumentMarshaling{
 				Name: paramerStr[paramerStrSunType+1 : onParamerEnd], //paramerStrSun[paramerDataLen+1:],
-				Type: "tuple[]",
+				Type: _types,
 				//InternalType: "struct main.AdditionalRecipient.F",
 				Components: argumentMarshalingSun,
 			})
