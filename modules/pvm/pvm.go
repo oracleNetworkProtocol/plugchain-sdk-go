@@ -378,6 +378,9 @@ func (p pvmClient) TransactionArgs(tran ArgsRequest) ([]byte, error) {
 		gas := hexutil.Uint64(tran.Gas)
 		args.Gas = &gas
 	}
+	if tran.Num.Int64() > 0 {
+		args.Value = (*hexutil.Big)(&tran.Num)
+	}
 	transferData, err := p.PackData(tran.FunctionSelector, tran.Args...)
 	if err != nil {
 		return nil, sdk.Wrap(err)
