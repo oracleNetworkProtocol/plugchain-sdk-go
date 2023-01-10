@@ -445,14 +445,21 @@ func (p pvmClient) PackData(function_selector string, args ...interface{}) (data
 	var _hexParamer []byte
 	paramerStr := function_selector[index : len(function_selector)-1]
 	if strings.Index(paramerStr, "tuple") >= 0 {
-		new_function_selector := ""
-		_hexParamer, new_function_selector, err = p.hexParamerTuple(paramerStr, args)
+		arguments, new_function_selector, err := p.hexParamerTuple(paramerStr)
+		if err != nil {
+			return data, err
+		}
+		_hexParamer, err = arguments.Pack(args...)
 		if err != nil {
 			return data, err
 		}
 		function_selector = fmt.Sprintf("%v(%v)", function_selector[:index-1], new_function_selector)
 	} else {
-		_hexParamer, err = p.hexParamer(paramerStr, args)
+		arguments, err := p.hexParamer(paramerStr)
+		if err != nil {
+			return data, err
+		}
+		_hexParamer, err = arguments.Pack(args...)
 		if err != nil {
 			return data, err
 		}
@@ -462,27 +469,55 @@ func (p pvmClient) PackData(function_selector string, args ...interface{}) (data
 	return data, err
 }
 
-func (p pvmClient) hexParamer(paramerStr string, args []interface{}) (data []byte, err error) {
-	paramer := strings.Split(paramerStr, ",")
-	if len(paramer) != len(args) {
-		return data, err
+func (p pvmClient) UnPackData(function_selector string, data []byte) (args interface{}, err error) {
+	if function_selector == "" {
+		return nil, nil
 	}
-	var arguments abi.Arguments
+	function_selector = strings.Replace(function_selector, " ", "", -1)
+	index := strings.Index(function_selector, "(")
+	if index < 1 {
+		return args, err
+	}
+	index += 1
+	paramerStr := function_selector[index : len(function_selector)-1]
+	if strings.Index(paramerStr, "tuple") >= 0 {
+		arguments, _, err := p.hexParamerTuple(paramerStr)
+		if err != nil {
+			return args, err
+		}
+		args, err = arguments.Unpack(data)
+		if err != nil {
+			return args, err
+		}
+	} else {
+		arguments, err := p.hexParamer(paramerStr)
+		if err != nil {
+			return args, err
+		}
+		args, err = arguments.Unpack(data)
+		if err != nil {
+			return args, err
+		}
+	}
+	return args, err
+}
+
+func (p pvmClient) hexParamer(paramerStr string) (arguments abi.Arguments, err error) {
+	paramer := strings.Split(paramerStr, ",")
 	for _, v := range paramer {
 		_type, e := abi.NewType(v, "", nil)
 		if e != nil {
-			return data, e
+			return arguments, e
 		}
 		arguments = append(arguments, abi.Argument{
 			Type: _type,
 		})
 	}
-	return arguments.Pack(args...)
+	return arguments, nil
 }
 
-func (p pvmClient) hexParamerTuple(paramerStr string, args []interface{}) (data []byte, function_selectors string, err error) {
+func (p pvmClient) hexParamerTuple(paramerStr string) (arguments abi.Arguments, function_selectors string, err error) {
 	paramer := strings.Split(paramerStr, ";")
-	var arguments abi.Arguments
 	for _, v := range paramer {
 		function_selector := ""
 		var argumentMarshaling []abi.ArgumentMarshaling
@@ -502,15 +537,14 @@ func (p pvmClient) hexParamerTuple(paramerStr string, args []interface{}) (data 
 		function_selectors = fmt.Sprintf("%v%v,", function_selectors, function_selector)
 		_type, e := abi.NewType(v, "", argumentMarshaling)
 		if e != nil {
-			return data, function_selectors, e
+			return arguments, function_selectors, e
 		}
 		arguments = append(arguments, abi.Argument{
 			Type: _type,
 		})
 	}
-	data, err = arguments.Pack(args...)
 	function_selectors = function_selectors[:len(function_selectors)-1]
-	return data, function_selectors, err
+	return arguments, function_selectors, nil
 }
 
 func cc(paramerStr string) ([]abi.ArgumentMarshaling, string) {

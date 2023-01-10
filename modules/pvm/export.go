@@ -10,6 +10,7 @@ type Client interface {
 	sdk.Module
 	TransactionArgs(tran ArgsRequest) ([]byte, error)
 	PackData(function_selector string, args ...interface{}) ([]byte, error)
+	UnPackData(function_selector string, data []byte) (interface{}, error)
 
 	GetGasPrice() (*big.Int, error)
 	EstimateGas(tran ArgsRequest) (uint64, error)
