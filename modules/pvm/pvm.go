@@ -455,13 +455,15 @@ func (p pvmClient) PackData(function_selector string, args ...interface{}) (data
 		}
 		function_selector = fmt.Sprintf("%v(%v)", function_selector[:index-1], new_function_selector)
 	} else {
-		arguments, err := p.hexParamer(paramerStr)
-		if err != nil {
-			return data, err
-		}
-		_hexParamer, err = arguments.Pack(args...)
-		if err != nil {
-			return data, err
+		if len(paramerStr) > 0 {
+			arguments, err := p.hexParamer(paramerStr)
+			if err != nil {
+				return data, err
+			}
+			_hexParamer, err = arguments.Pack(args...)
+			if err != nil {
+				return data, err
+			}
 		}
 	}
 	data = append(data, crypto.Keccak256([]byte(function_selector))[:4]...)
@@ -504,6 +506,9 @@ func (p pvmClient) UnPackData(function_selector string, data []byte) (args inter
 
 func (p pvmClient) hexParamer(paramerStr string) (arguments abi.Arguments, err error) {
 	paramer := strings.Split(paramerStr, ",")
+	if len(paramer) == 0 {
+		return arguments, nil
+	}
 	for _, v := range paramer {
 		_type, e := abi.NewType(v, "", nil)
 		if e != nil {
